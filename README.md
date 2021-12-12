@@ -9,13 +9,13 @@ Simple and boilerplate free state management library
 ### yarn
 
 ```properties
-yarn add poly-state
+yarn add @poly-state/poly-state
 ```
 
 ### npm
 
 ```properties
-npm install poly-state
+npm install @poly-state/poly-state
 ```
 
 ---
