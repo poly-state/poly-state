@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/poly-state",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"author": "Shahriar Shojib",
@@ -11,9 +11,7 @@
 	],
 	"types": "./dist/index.d.ts",
 	"dependencies": {
-		"@types/lodash": "^4.14.178",
-		"lodash": "^4.17.21",
-		"typescript": "^4.5.3"
+		"lodash": "^4.17.21"
 	},
 	"devDependencies": {
 		"@types/react": "^17.0.37",
@@ -25,7 +23,9 @@
 		"preact": "^10.6.4",
 		"prettier": "^2.5.1",
 		"react": "^17.0.2",
-		"solid-js": "^1.2.6"
+		"solid-js": "^1.2.6",
+		"@types/lodash": "^4.14.178",
+		"typescript": "^4.5.3"
 	},
 	"peerDependencies": {
 		"preact": "^10.6.4",
