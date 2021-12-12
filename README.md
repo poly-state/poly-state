@@ -98,3 +98,23 @@ Using the `useStore` hook subscribes to the updates of your state and every time
 There is no need to wrap your components with a provider like other state management libraries since the useStore hooks relies on Effect caused by the state updates and cleans up itself on unmount.
 
 > This library is at beta stage and API's are subject to change, use at your own risk
+
+## Supported platforms
+
+- React/Next.js `import hooks from poly-state/hooks/react`
+- Preact `import hooks from poly-state/hooks/preact`
+- SolidJS `import hooks from poly-state/hooks/solidjs`
+
+> It is also possible to use this library in other frontend frameworks/libraries I plan on adding support for Svelte, Vue, Angular in near future
+
+## Types
+
+The libraries are fully typed and depends only on the type that you provide in initialization step, no further configuration is required.
+
+## Contributing
+
+Pull Requests are welcome.
+
+I am actively looking for contributors/maintainers for this project, if you're interested please reach out to me on LinkedIn/Email
+
+> More Documentation and Advanced usage coming soon
