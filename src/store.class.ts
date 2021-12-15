@@ -21,11 +21,11 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 	class Store<State extends StateConstraint> implements StoreType<State> {
 		protected isHydrated = false;
 		protected listeners = new Set<CallBack<Readonly<State>>>();
-		protected keySubscribers = new Map<keyof State, SubscriberCallBacks<State>[]>();
+		protected keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 
 		constructor(protected state: State) {
-			for (const key of Object.keys(this.state)) {
-				this.keySubscribers.set(key, []);
+			for (const key of Object.keys(this.state) as (keyof State)[]) {
+				this.keySubscribers[key] = new Set();
 			}
 			this.createMethods();
 		}
@@ -78,17 +78,14 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			key: Key,
 			callback: Key extends keyof State ? CallBack<Readonly<State[Key]>> : never
 		) {
-			this.keySubscribers.get(key)!.push(callback);
+			this.keySubscribers[key].add(callback as CallBack<Readonly<State[Key]>>);
 			return () => {
-				const index = this.keySubscribers.get(key)!.indexOf(callback);
-				if (index !== -1) {
-					this.keySubscribers.get(key)?.splice(index, 1);
-				}
+				this.keySubscribers[key].delete(callback as CallBack<Readonly<State[Key]>>);
 			};
 		}
 
 		private notifyKey(key: keyof State) {
-			for (const callback of this.keySubscribers.get(key) || []) {
+			for (const callback of this.keySubscribers[key]) {
 				callback(this.state[key]);
 			}
 		}
