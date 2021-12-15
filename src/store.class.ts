@@ -19,11 +19,11 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 		[key: string]: any;
 	}
 	class Store<State extends StateConstraint> implements StoreType<State> {
-		protected isHydrated = false;
-		protected listeners = new Set<CallBack<Readonly<State>>>();
-		protected keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
+		private isHydrated = false;
+		private listeners = new Set<CallBack<Readonly<State>>>();
+		private keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 
-		constructor(protected state: State) {
+		constructor(private state: State) {
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
 				this.keySubscribers[key] = new Set();
 			}
