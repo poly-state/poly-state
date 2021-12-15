@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import {
 	CallBack,
 	ReturnStoreType,
-	SetTypeArg,
+	SetStateFunctionArguments,
 	StateConstraint,
 	StoreType,
 	SubscriberCallBacks,
@@ -20,7 +20,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 	}
 	class Store<State extends StateConstraint> implements StoreType<State> {
 		protected isHydrated = false;
-		protected listeners = new Map<CallBack<State>, boolean>();
+		protected listeners = new Set<CallBack<Readonly<State>>>();
 		protected keySubscribers = new Map<keyof State, SubscriberCallBacks<State>[]>();
 
 		constructor(protected state: State) {
@@ -30,7 +30,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			this.createMethods();
 		}
 
-		hydrate(valueORcallback: SetTypeArg<State>) {
+		hydrate(valueORcallback: SetStateFunctionArguments<State>) {
 			if (!this.isHydrated) {
 				const newVal =
 					typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
@@ -45,7 +45,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			}
 		}
 
-		setState(valueORcallback: SetTypeArg<State>) {
+		setState(valueORcallback: SetStateFunctionArguments<State>) {
 			const newVal =
 				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
 
@@ -65,8 +65,8 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			this.notifyAll();
 		}
 
-		subscribe(callback: CallBack<State>) {
-			this.listeners.set(callback, true);
+		subscribe(callback: CallBack<Readonly<State>>) {
+			this.listeners.add(callback);
 			return () => this.listeners.delete(callback);
 		}
 
@@ -76,7 +76,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 
 		subscribeKey<Key extends keyof State>(
 			key: Key,
-			callback: Key extends keyof State ? CallBack<State[Key]> : never
+			callback: Key extends keyof State ? CallBack<Readonly<State[Key]>> : never
 		) {
 			this.keySubscribers.get(key)!.push(callback);
 			return () => {

@@ -1,9 +1,8 @@
-export type SetStateDef<T> = (value: T | ((oldValue: T) => T)) => void;
+export type SetStateFunction<T> = (value: Readonly<T> | ((oldValue: Readonly<T>) => T)) => void;
+export type SetStateFunctionArguments<T> = Readonly<T> | ((val: Readonly<T>) => T);
 
-export type SetTypeArg<T> = T | ((val: T) => T);
-
-export type SetterType<T> = {
-	[Key in keyof T as `set${Capitalize<string & Key>}`]: SetStateDef<T[Key]>;
+export type GeneratedSetters<T> = {
+	[Key in keyof T as `set${Capitalize<string & Key>}`]: SetStateFunction<T[Key]>;
 };
 
 export type SerializablePrimitives = string | number | boolean | null | undefined;
@@ -28,11 +27,11 @@ export type SubscriberCallBacks<T> = {
 }[keyof T];
 
 export interface StoreType<T> {
-	hydrate: SetStateDef<T>;
-	setState: SetStateDef<T>;
-	subscribe(callback: CallBack<T>): () => void;
-	subscribeKey<Key extends keyof T>(key: Key, callback: CallBack<T[Key]>): () => void;
-	getState(): T;
+	hydrate: SetStateFunction<T>;
+	setState: SetStateFunction<T>;
+	subscribe(callback: CallBack<Readonly<T>>): () => void;
+	subscribeKey<Key extends keyof T>(key: Key, callback: CallBack<Readonly<T[Key]>>): () => void;
+	getState(): Readonly<T>;
 }
 
-export type ReturnStoreType<T extends StateConstraint> = StoreType<T> & SetterType<T>;
+export type ReturnStoreType<T extends StateConstraint> = StoreType<T> & GeneratedSetters<T>;
