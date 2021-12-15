@@ -34,14 +34,8 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			if (!this.isHydrated) {
 				const newVal =
 					typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
-				for (const key of Object.keys(this.state)) {
-					if (this.state[key] !== newVal[key]) {
-						this.state = { ...this.state, [key]: newVal[key] };
-						this.notifyKey(key);
-					}
-				}
+				this.state = newVal;
 				this.isHydrated = true;
-				this.notifyAll();
 			}
 		}
 
@@ -51,14 +45,13 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 
 			const shouldNotifyAll = !isEqual(this.state, newVal);
 
-			if (!shouldNotifyAll) {
-				return;
-			}
+			if (!shouldNotifyAll) return;
 
-			for (const key of Object.keys(this.state)) {
+			for (const key of Object.keys(this.state) as (keyof State)[]) {
 				const shouldNotify = !isEqual(this.state[key], newVal[key]);
-				this.state = { ...this.state, [key]: newVal[key] };
+
 				if (shouldNotify) {
+					this.state[key] = newVal[key];
 					this.notifyKey(key);
 				}
 			}
@@ -97,22 +90,20 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 		}
 
 		private createMethods() {
-			for (const key of Object.keys(this.state) as string[]) {
-				Store.prototype[`set${capitalize(key)}`] = function (
-					this: Store<State>,
-					valueORcallback: any
-				) {
-					const newVal =
-						typeof valueORcallback === 'function'
-							? valueORcallback(this.state[key])
-							: valueORcallback;
-					const shouldNotify = !isEqual(this.state[key], newVal);
-					this.state = { ...this.state, [key]: newVal };
-					if (shouldNotify) {
-						this.notifyKey(key);
-						this.notifyAll();
-					}
-				};
+			for (const key of Object.keys(this.state) as (keyof State)[]) {
+				Store.prototype[`set${capitalize(key as string) as Capitalize<keyof State & string>}`] =
+					function (this: Store<State>, valueORcallback: any) {
+						const newVal =
+							typeof valueORcallback === 'function'
+								? valueORcallback(this.state[key])
+								: valueORcallback;
+						const shouldNotify = !isEqual(this.state[key], newVal);
+						if (shouldNotify) {
+							this.state[key] = newVal;
+							this.notifyKey(key);
+							this.notifyAll();
+						}
+					};
 			}
 		}
 	}
