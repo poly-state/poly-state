@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/poly-state",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"author": "Shahriar Shojib",
@@ -39,10 +39,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/shahriar-shojib/poly-state.git"
+		"url": "https://github.com/poly-state/poly-state.git"
 	},
 	"bugs": {
-		"url": "https://github.com/shahriar-shojib/poly-state/issues"
+		"url": "https://github.com/poly-state/poly-state/issues"
 	},
-	"homepage": "https://github.com/shahriar-shojib/poly-state"
+	"homepage": "https://github.com/poly-state/poly-state"
 }
