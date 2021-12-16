@@ -7,7 +7,7 @@ import {
 	SetStateFunctionArguments,
 	StateConstraint,
 	StoreType,
-	SubscriberCallBacks,
+	SubscriberCallBacks
 } from './types';
 import { capitalize } from './utils';
 
@@ -69,7 +69,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 
 		subscribeKey<Key extends keyof State>(
 			key: Key,
-			callback: Key extends keyof State ? CallBack<Readonly<State[Key]>> : never
+			callback: Key extends keyof State ? CallBack<Readonly<State>[Key]> : never
 		) {
 			this.keySubscribers[key].add(callback as CallBack<Readonly<State[Key]>>);
 			return () => {
