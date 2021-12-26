@@ -11,8 +11,6 @@
 		"forceConsistentCasingInFileNames": true,
 		"module": "CommonJS",
 		"moduleResolution": "Node",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"outDir": "dist",
 		"sourceMap": false,
@@ -28,5 +26,5 @@
 		"noFallthroughCasesInSwitch": true,
 		"pretty": true
 	},
-	"include": ["./src"]
+	"include": ["./src/**/*.ts"]
 }
