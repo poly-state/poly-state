@@ -1,15 +1,15 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isEqual } from 'lodash';
+import { DeepReadonly } from 'ts-essentials';
 import {
 	CallBack,
 	ReturnStoreType,
 	SetStateFunctionArguments,
 	StateConstraint,
 	StoreType,
-	SubscriberCallBacks
+	SubscriberCallBacks,
 } from './types';
-import { capitalize } from './utils';
+import { capitalize, deleteFromArray } from './utils';
 
 export const getStoreClass = <T extends StateConstraint>(): new (
 	initialState: T
@@ -20,28 +20,33 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 	}
 	class Store<State extends StateConstraint> implements StoreType<State> {
 		private isHydrated = false;
-		private listeners = new Set<CallBack<Readonly<State>>>();
+		private listeners: CallBack<State>[] = [];
 		private keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 
 		constructor(private state: State) {
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				this.keySubscribers[key] = new Set();
+				this.keySubscribers[key] = [];
 			}
 			this.createMethods();
 		}
 
 		hydrate(valueORcallback: SetStateFunctionArguments<State>) {
-			if (!this.isHydrated) {
-				const newVal =
-					typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
-				this.state = newVal;
-				this.isHydrated = true;
-			}
+			if (this.isHydrated) return;
+
+			const newVal =
+				typeof valueORcallback === 'function'
+					? valueORcallback(this.state as DeepReadonly<State>)
+					: valueORcallback;
+
+			this.state = newVal;
+			this.isHydrated = true;
 		}
 
 		setState(valueORcallback: SetStateFunctionArguments<State>) {
 			const newVal =
-				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
+				typeof valueORcallback === 'function'
+					? valueORcallback(this.state as DeepReadonly<State>)
+					: valueORcallback;
 
 			const shouldNotifyAll = !isEqual(this.state, newVal);
 
@@ -59,8 +64,10 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 		}
 
 		subscribe(callback: CallBack<Readonly<State>>) {
-			this.listeners.add(callback);
-			return () => this.listeners.delete(callback);
+			this.listeners.push(callback);
+			return () => {
+				deleteFromArray(this.listeners, callback);
+			};
 		}
 
 		getState() {
@@ -69,11 +76,11 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 
 		subscribeKey<Key extends keyof State>(
 			key: Key,
-			callback: Key extends keyof State ? CallBack<Readonly<State>[Key]> : never
+			callback: Key extends keyof State ? CallBack<State[Key]> : never
 		) {
-			this.keySubscribers[key].add(callback as CallBack<Readonly<State[Key]>>);
+			this.keySubscribers[key].push(callback as CallBack<State[Key]>);
 			return () => {
-				this.keySubscribers[key].delete(callback as CallBack<Readonly<State[Key]>>);
+				deleteFromArray(this.keySubscribers[key], callback as CallBack<State[Key]>);
 			};
 		}
 
@@ -84,8 +91,8 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 		}
 
 		private notifyAll() {
-			for (const callback of this.listeners.keys()) {
-				callback(this.state);
+			for (const callback of this.listeners) {
+				callback(this.state as DeepReadonly<State>);
 			}
 		}
 
@@ -97,7 +104,9 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 							typeof valueORcallback === 'function'
 								? valueORcallback(this.state[key])
 								: valueORcallback;
+
 						const shouldNotify = !isEqual(this.state[key], newVal);
+
 						if (shouldNotify) {
 							this.state[key] = newVal;
 							this.notifyKey(key);
