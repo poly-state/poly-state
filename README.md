@@ -20,72 +20,85 @@ npm install @poly-state/poly-state
 
 ---
 
-## How to use
+## How to use `React`
 
-first define a type for the values you would like to store in your state `[Recommended]`
+first Install react bindings for poly-state
 
-```typescript
-type MyStoreType = {
-	name: string;
-	count: number;
-};
+### npm
+
+```properties
+npm install @poly-state/react
 ```
 
-then create an initial state for your store
+### yarn
 
-```typescript
-type MyStoreType = {
-	name: string;
-	count: number;
-};
-
-const myStoreInitialState: MyStoreType = {
-	name: '',
-	count: 0,
-};
+```properties
+yarn add @poly-state/react
 ```
 
-finally, create your store
+---
+
+create a store:
 
 ```typescript
-import { createStore } from 'poly-state';
-import { useStore } from 'poly-state/hooks/react';
+import { createStore } from '@poly-state/poly-state';
+import { createHooks } from '@poly-state/react';
 
-type MyStoreType = {
-	name: string;
-	count: number;
-};
+const counterStore = createStore({ count: 0 });
 
-const myStoreInitialState: MyStoreType = {
-	name: '',
-	count: 0,
-};
-
-export const myStore = createStore(myStoreInitialState);
-
-//[optional] create hooks to use your store easily
-
-export const useMyStore = () => useStore(myStore);
+const [useCounterStore, useCounterStoreSelector] = createHooks(counterStore);
 ```
 
-now let's make a counter example with React with the store we just created:
+---
+
+use store in your component
 
 ```tsx
-export const MyComponent = () => {
-	const { count } = useMyStore();
+export const MyCounter = () => {
+	const count = useCounterStoreSelector('count');
 
-	const handleIncrement = () => {
-		myStore.setCount((previousCount) => previousCount + 1);
+	// or const { count } = useCounterStore();
+
+	const increment = () => {
+		counterStore.setCount((count) => count + 1);
+
+		// or counterStore.setCount(count + 1);
+		// or counterStore.setState({ count: count + 1 });
+		// or counterStore.setState((state) => {
+		//	return {...state, count: state.count + 1};
+		//}));
 	};
 
 	return (
 		<div>
-			<h1>Count is {count}</h1>
-			<button onClick={handleIncrement}>Count is {count}</button>
+			<h1>{count}</h1>
+			<button onClick={increment}>Increment</button>
 		</div>
 	);
 };
 ```
+
+That's all there is to it!
+You do not have to defined anything fancy or reducers and actions, just use the store.
+
+There is also no need to use a context provider to use the store.
+
+---
+
+## Features:
+
+- Boilerplate free API
+- No reducers and actions
+- No context provider
+- Lightweight
+- Fully typed and should work fine with javascript projects as well
+
+- Ability to extend store functionality by extending the store class and adding your own methods.
+- Equality Checks to prevent unnecessary re-renders
+
+- SSR support
+
+---
 
 ## How does it work?
 
@@ -101,15 +114,17 @@ There is no need to wrap your components with a provider like other state manage
 
 ## Supported platforms
 
-- React/Next.js `import hooks from poly-state/hooks/react`
-- Preact `import hooks from poly-state/hooks/preact`
-- SolidJS `import hooks from poly-state/hooks/solidjs`
+- React/Next.js
+  - npm: `npm install @poly-state/react`
+  - yarn: `yarn add @poly-state/react`
+- Preact `upcoming`
+  - npm: `npm install @poly-state/preact`
+  - yarn: `yarn add @poly-state/preact`
+- SolidJS `upcoming`
+  - npm: `npm install @poly-state/solidjs`
+  - yarn: `yarn add @poly-state/solidjs`
 
 > It is also possible to use this library in other frontend frameworks/libraries I plan on adding support for Svelte, Vue, Angular in near future
-
-## Types
-
-The libraries are fully typed and depends only on the type that you provide in initialization step, no further configuration is required.
 
 ## Contributing
 
