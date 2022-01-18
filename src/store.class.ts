@@ -3,8 +3,9 @@ import { isEqual } from 'lodash';
 import { DeepReadonly } from 'ts-essentials';
 import {
 	CallBack,
+	KeySubscriberFunction,
 	ReturnStoreType,
-	SetStateFunctionArguments,
+	SetStateFunction,
 	StateConstraint,
 	StoreType,
 	SubscriberCallBacks,
@@ -30,7 +31,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			this.createMethods();
 		}
 
-		hydrate(valueORcallback: SetStateFunctionArguments<State>) {
+		hydrate: SetStateFunction<State> = (valueORcallback) => {
 			if (this.isHydrated) return;
 
 			const newVal =
@@ -40,9 +41,9 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 
 			this.state = newVal;
 			this.isHydrated = true;
-		}
+		};
 
-		setState(valueORcallback: SetStateFunctionArguments<State>) {
+		setState: SetStateFunction<State> = (valueORcallback) => {
 			const newVal =
 				typeof valueORcallback === 'function'
 					? valueORcallback(this.state as DeepReadonly<State>)
@@ -61,7 +62,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 				}
 			}
 			this.notifyAll();
-		}
+		};
 
 		subscribe(callback: CallBack<Readonly<State>>) {
 			this.listeners.push(callback);
@@ -74,15 +75,12 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 			return this.state as DeepReadonly<State>;
 		}
 
-		subscribeKey<Key extends keyof State>(
-			key: Key,
-			callback: Key extends keyof State ? CallBack<State[Key]> : never
-		) {
-			this.keySubscribers[key].push(callback as CallBack<State[Key]>);
+		subscribeKey: KeySubscriberFunction<State, keyof State> = (key, callback) => {
+			this.keySubscribers[key].push(callback);
 			return () => {
-				deleteFromArray(this.keySubscribers[key], callback as CallBack<State[Key]>);
+				deleteFromArray(this.keySubscribers[key], callback);
 			};
-		}
+		};
 
 		private notifyKey(key: keyof State) {
 			for (const callback of this.keySubscribers[key]) {

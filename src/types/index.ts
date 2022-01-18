@@ -1,7 +1,16 @@
 import { DeepReadonly } from 'ts-essentials';
 
 export type SetStateFunction<T> = (value: T | ((oldValue: DeepReadonly<T>) => T)) => void;
-export type SetStateFunctionArguments<T> = T | ((val: DeepReadonly<T>) => T);
+export type SubscribeFunction<T> = (
+	callback: (newValue: DeepReadonly<T>) => void
+) => UnsubscribeFunction;
+
+export type KeySubscriberFunction<T extends StateConstraint, StoreKeys extends keyof T> = (
+	key: StoreKeys,
+	callback: SubscribeFunction<T[StoreKeys]>
+) => UnsubscribeFunction;
+
+export type UnsubscribeFunction = () => void;
 
 export type GeneratedSetters<T> = {
 	[Key in keyof T as `set${Capitalize<string & Key>}`]: SetStateFunction<T[Key]>;
@@ -34,11 +43,8 @@ export type SubscriberCallBacks<T extends StateConstraint> = {
 export type StoreType<T> = {
 	hydrate: SetStateFunction<T>;
 	setState: SetStateFunction<T>;
-	subscribe(callback: CallBack<T>): () => void;
-	subscribeKey<Key extends keyof T>(
-		key: Key,
-		callback: Key extends keyof T ? CallBack<T[Key]> : never
-	): () => void;
+	subscribe: SubscribeFunction<T>;
+	subscribeKey: KeySubscriberFunction<T, keyof T>;
 	getState(): DeepReadonly<T>;
 };
 
