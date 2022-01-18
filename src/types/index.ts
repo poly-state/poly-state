@@ -39,7 +39,7 @@ export type StoreType<T> = {
 		key: Key,
 		callback: Key extends keyof T ? CallBack<T[Key]> : never
 	): () => void;
-	getState(): Readonly<T>;
+	getState(): DeepReadonly<T>;
 };
 
 export type ReturnStoreType<T extends StateConstraint> = StoreType<T> & GeneratedSetters<T>;

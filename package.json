@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/poly-state",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"author": "Shahriar Shojib",
