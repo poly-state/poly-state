@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/poly-state",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"author": "Shahriar Shojib",
@@ -11,7 +11,8 @@
 	],
 	"types": "./dist/index.d.ts",
 	"dependencies": {
-		"lodash": "^4.17.21"
+		"lodash": "^4.17.21",
+		"ts-essentials": "^9.1.2"
 	},
 	"jest": {
 		"moduleFileExtensions": [
@@ -42,7 +43,7 @@
 		"rimraf": "^3.0.2",
 		"solid-js": "^1.2.6",
 		"ts-essentials": "^9.1.2",
-		"typescript": "^4.5.3"
+		"typescript": "^4.5.4"
 	},
 	"scripts": {
 		"build": "rimraf dist && tsc -p tsconfig.build.json",
