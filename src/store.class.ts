@@ -72,7 +72,7 @@ export const getStoreClass = <T extends StateConstraint>(): new (
 		}
 
 		getState() {
-			return this.state as DeepReadonly<State>;
+			return this.state;
 		}
 
 		subscribeKey: KeySubscriberFunction<State, keyof State> = (key, callback) => {

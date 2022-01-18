@@ -45,7 +45,7 @@ export type StoreType<T> = {
 	setState: SetStateFunction<T>;
 	subscribe: SubscribeFunction<T>;
 	subscribeKey: KeySubscriberFunction<T, keyof T>;
-	getState(): DeepReadonly<T>;
+	getState(): T;
 };
 
 export type ReturnStoreType<T extends StateConstraint> = StoreType<T> & GeneratedSetters<T>;
