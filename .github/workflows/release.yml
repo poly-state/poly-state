@@ -13,7 +13,9 @@ jobs:
         with:
           node-version: 16
       - run: yarn ci
-      - run: yarn build
+      - run: yarn lint
+      - run: yarn format:check
+      - run: yarn test
 
   publish-npm:
     needs: build
@@ -25,9 +27,6 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
       - run: yarn ci
-      - run: yarn lint
-      - run: yarn format:check
-      - run: yarn test
       - run: yarn build
       - run: npm publish
 
