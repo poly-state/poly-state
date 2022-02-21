@@ -7,10 +7,10 @@ describe('getStoreIdentifier', () => {
 		expect(result).toBe('foo');
 	});
 
-	// it('should return a random name, if the name is empty', () => {
-	// 	const name = '';
-	// 	const regex = /^STORE_[0-9a-zA-Z]{21}$/;
-	// 	const result = getStoreIdentifier(name);
-	// 	expect(regex.test(result)).toBe(true);
-	// });
+	it('should return a random name, if the name is empty', () => {
+		const name = '';
+		const regex = /STORE/;
+		const result = getStoreIdentifier(name);
+		expect(regex.test(result)).toBe(true);
+	});
 });
