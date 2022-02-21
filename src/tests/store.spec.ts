@@ -113,4 +113,44 @@ describe('Poly State Main functionality', () => {
 
 		expect(listener).not.toHaveBeenCalled();
 	});
+
+	it('it should call key subscriber if the key is an object', () => {
+		const myStore = createStore({ count: { test1: 1, test2: 2 } });
+
+		const listener = jest.fn();
+		myStore.subscribeKey('count', listener);
+
+		myStore.setCount({ test1: 2, test2: 3 });
+
+		expect(listener).toHaveBeenCalledWith({ test1: 2, test2: 3 });
+	});
+	it('it should call key subscriber if the key is an array', () => {
+		const myStore = createStore({ count: [1, 2, 3] });
+
+		const listener = jest.fn();
+		myStore.subscribeKey('count', listener);
+
+		myStore.setCount([4, 5, 6]);
+
+		expect(listener).toHaveBeenCalledWith([4, 5, 6]);
+	});
+
+	it('it should call key subscriber if the key is an array of objects', () => {
+		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+
+		const listener = jest.fn();
+		myStore.subscribeKey('count', listener);
+
+		myStore.setCount([{ test: 2 }, { test: 3 }, { test: 4 }]);
+
+		expect(listener).toHaveBeenCalledWith([{ test: 2 }, { test: 3 }, { test: 4 }]);
+	});
+
+	it('should send the correct value if the updater is a function when updating a key', () => {
+		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		myStore.setCount((oldVal) => {
+			expect(oldVal).toEqual([{ test: 1 }, { test: 2 }, { test: 3 }]);
+			return oldVal;
+		});
+	});
 });
