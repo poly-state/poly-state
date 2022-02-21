@@ -18,7 +18,7 @@ function isDateObject(obj: any): obj is Date {
 	return obj != null && obj.constructor.name === 'Date';
 }
 
-function isEqualArray(a: any[], b: any[]) {
+export function isEqualArray(a: any[], b: any[]) {
 	if (a.length !== b.length) {
 		return false;
 	}
@@ -26,23 +26,29 @@ function isEqualArray(a: any[], b: any[]) {
 	for (let i = 0; i < a.length; i++) {
 		if (Array.isArray(a[i]) && Array.isArray(b[i])) {
 			const isEqual = isEqualArray(a[i], b[i]);
+
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (isObject(a[i]) && isObject(b[i])) {
 			const isEqual = isEqualObject(a[i], b[i]);
+
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (isDateObject(a[i]) && isDateObject(b[i])) {
 			const isEqual = isEqualDate(a[i], b[i]);
+
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (a[i] !== b[i]) {
@@ -70,6 +76,7 @@ function isEqualObject(a: Record<any, any>, b: Record<any, any>) {
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (isObject(a[key]) && isObject(b[key])) {
@@ -77,6 +84,7 @@ function isEqualObject(a: Record<any, any>, b: Record<any, any>) {
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (isDateObject(a[key]) && isDateObject(b[key])) {
@@ -84,6 +92,7 @@ function isEqualObject(a: Record<any, any>, b: Record<any, any>) {
 			if (!isEqual) {
 				return false;
 			}
+			continue;
 		}
 
 		if (a[key] !== b[key]) {
@@ -95,14 +104,18 @@ function isEqualObject(a: Record<any, any>, b: Record<any, any>) {
 }
 
 export const isEqual = (a: unknown, b: unknown): boolean => {
-	if (a === b) return true;
 	if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+
 	if (Array.isArray(a) && Array.isArray(b)) {
 		return isEqualArray(a, b);
 	}
+
 	if (isObject(a) && isObject(b)) {
 		return isEqualObject(a, b);
 	}
+
+	if (a === b) return true;
+
 	return false;
 };
 
