@@ -149,6 +149,10 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			if (typeof window !== undefined) {
 				this.devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
 					name: this.storeIdentifier,
+					trace: true,
+					features: {
+						dispatch: true,
+					},
 				});
 
 				this.devToolsInstance.subscribe((message) => {
@@ -156,8 +160,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 						console.log('DevTools requested to change the state to', message.state);
 						this.state = message.state;
 						this.notifyAll();
-						for (const key of Object.keys(this.state) as (keyof State)[]) {
-							this.notifyKey(key);
+
+						for (const [key, cb] of Object.entries(this.keySubscribers)) {
+							cb(this.state[key]);
 						}
 					}
 				});

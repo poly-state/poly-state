@@ -9,9 +9,8 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "CommonJS",
+		"module": "ES6",
 		"moduleResolution": "Node",
-		"jsx": "react-jsx",
 		"outDir": "dist",
 		"sourceMap": false,
 		"declaration": true,
@@ -23,8 +22,7 @@
 		"noImplicitAny": true,
 		"strictFunctionTypes": true,
 		"strictPropertyInitialization": true,
-		"noFallthroughCasesInSwitch": true,
-		"pretty": true
+		"noFallthroughCasesInSwitch": true
 	},
 	"include": ["./src/**/*.ts"]
 }
