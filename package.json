@@ -44,6 +44,7 @@
 		"build": "rimraf dist && tsc -p tsconfig.build.json",
 		"ci": "yarn --frozen-lockfile",
 		"test": "jest",
+		"test:watch": "jest --watch",
 		"format": "prettier -c -w src/**/*",
 		"lint:fix": "eslint --fix src/**/*.{ts,tsx}",
 		"lint": "eslint  src/**/*.{ts,tsx}",
