@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReduxDevToolsConnection } from './redux';
 import {
 	CallBack,
 	EqualityComparatorFunction,
 	KeySubscriberFunction,
 	ReturnStoreType,
-	SetStateFunction,
+	SetStateArgs,
 	StateConstraint,
 	StoreConfig,
+	StoreMiddleWareFunction,
 	StoreType,
 	SubscriberCallBacks,
 } from './types';
@@ -32,6 +34,8 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		private sendToDevtools: ((action: string, state: any) => void) | null = null;
 		private devToolsInstance: ReduxDevToolsConnection | null = null;
 		private storeIdentifier: string;
+
+		private middleWares: StoreMiddleWareFunction<State>[] = [];
 
 		constructor(
 			private state: State,
@@ -62,22 +66,36 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			this.createMethods();
 		}
 
-		hydrate: SetStateFunction<State> = (valueORcallback) => {
+		hydrate(valueORcallback: SetStateArgs<State>) {
 			if (this.isHydrated) return;
 
 			const newVal =
 				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
 
-			this.state = newVal;
+			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
+				if (middleware.type === 'HYDRATE') {
+					return middleware.middleware(acc as any, this.state as any);
+				}
+				return acc;
+			}, newVal);
+
+			this.state = afterMiddleware;
 			this.isHydrated = true;
 			this.sendToDevtools?.('HYDRATE', this.state);
-		};
+		}
 
-		setState: SetStateFunction<State> = (valueORcallback) => {
+		setState(valueORcallback: SetStateArgs<State>) {
 			const newVal =
 				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
 
-			const shouldNotifyAll = !this.isEqual(this.state, newVal);
+			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
+				if (middleware.type === 'SET_STATE') {
+					return middleware.middleware(acc as any, this.state as any);
+				}
+				return acc;
+			}, newVal);
+
+			const shouldNotifyAll = !this.isEqual(this.state, afterMiddleware);
 
 			if (!shouldNotifyAll) return;
 
@@ -89,9 +107,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 					this.notifyKey(key);
 				}
 			}
-			this.notifyAll();
+			this.notifySubscribers();
 			this.sendToDevtools?.('SET_STATE', this.state);
-		};
+		}
 
 		subscribe(callback: CallBack<Readonly<State>>) {
 			this.listeners.push(callback);
@@ -104,12 +122,18 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			return this.state;
 		}
 
-		subscribeKey: KeySubscriberFunction<State, keyof State> = (key, callback) => {
-			this.keySubscribers[key].push(callback);
+		subscribeKey<Key extends keyof State>(key: Key, callback: KeySubscriberFunction<State, Key>) {
+			this.keySubscribers[key].push(callback as unknown as CallBack<State[Key]>);
 			return () => {
-				deleteFromArray(this.keySubscribers[key], callback);
+				deleteFromArray(this.keySubscribers[key], callback as unknown as CallBack<State[Key]>);
 			};
-		};
+		}
+
+		use(middleware: StoreMiddleWareFunction<State>) {
+			this.middleWares.push(middleware);
+
+			return this;
+		}
 
 		private notifyKey(key: keyof State) {
 			for (const callback of this.keySubscribers[key]) {
@@ -117,7 +141,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			}
 		}
 
-		private notifyAll() {
+		private notifySubscribers() {
 			for (const callback of this.listeners) {
 				callback(this.state);
 			}
@@ -133,13 +157,32 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 								? valueORcallback(this.state[key])
 								: valueORcallback;
 
-						const shouldNotify = !this.isEqual(this.state[key], newVal);
+						const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
+							if (
+								middleware.type ===
+								`set${capitalize(key as string) as Capitalize<keyof State & string>}`
+							) {
+								return middleware.middleware(acc as any, this.state[key] as any);
+							}
+
+							if (middleware.type === 'ALL_SETTERS') {
+								return middleware.middleware(
+									{ ...this.state, [key]: acc } as any,
+									this.state as any
+								);
+							}
+
+							return acc;
+						}, newVal);
+
+						const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
 
 						if (shouldNotify) {
 							this.state[key] = newVal;
 							this.notifyKey(key);
-							this.notifyAll();
+							this.notifySubscribers();
 						}
+
 						this.sendToDevtools?.(`set${capitalize(key as string)}`, this.state);
 					};
 			}
@@ -159,7 +202,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 					if (message.type === 'DISPATCH' && message.state) {
 						console.log('DevTools requested to change the state to', message.state);
 						this.state = message.state;
-						this.notifyAll();
+						this.notifySubscribers();
 
 						for (const [key, cb] of Object.entries(this.keySubscribers)) {
 							cb(this.state[key]);
