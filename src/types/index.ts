@@ -38,21 +38,10 @@ export type EqualityComparatorFunction = (a: unknown, b: unknown) => boolean;
 
 export type StoreConfig = {
 	/**
-	 * Enable redux devtools integration
-	 * @default false
-	 */
-	enableDevTools?: boolean;
-
-	/**
 	 * Custom Equality comparator function
 	 * @default none
 	 */
 	equalityComparator?: EqualityComparatorFunction;
-
-	/**
-	 * Used to identify inside redux devtools
-	 */
-	storeIdentifier?: string;
 };
 
 export type GeneratedActions<T extends StateConstraint> = {
@@ -68,5 +57,5 @@ export type StoreMiddleWareFunction<T extends StateConstraint> =
 	| { type: 'HYDRATE'; middleware: (payload: T, previousState: T) => T }
 	| {
 			type: 'ALL_SETTERS';
-			middleware: (payload: T, previousState: T) => T;
+			middleware: (payload: T, previousState: T, type: string) => T;
 	  };

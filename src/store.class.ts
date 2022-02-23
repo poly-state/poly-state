@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ReduxDevToolsConnection } from './redux';
 import {
 	CallBack,
 	EqualityComparatorFunction,
@@ -12,7 +11,7 @@ import {
 	StoreType,
 	SubscriberCallBacks,
 } from './types';
-import { capitalize, deleteFromArray, getStoreIdentifier, isEqual } from './utils';
+import { capitalize, deleteFromArray, isEqual } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
@@ -30,35 +29,18 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		private listeners: CallBack<State>[] = [];
 		private keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 		private isEqual: EqualityComparatorFunction;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		private sendToDevtools: ((action: string, state: any) => void) | null = null;
-		private devToolsInstance: ReduxDevToolsConnection | null = null;
-		private storeIdentifier: string;
 
 		private middleWares: StoreMiddleWareFunction<State>[] = [];
 
 		constructor(
 			private state: State,
 			config: StoreConfig = {
-				enableDevTools: false,
 				equalityComparator: isEqual,
-				storeIdentifier: '',
 			}
 		) {
-			const { enableDevTools = false, equalityComparator = isEqual, storeIdentifier = '' } = config;
+			const { equalityComparator = isEqual } = config;
 
 			this.isEqual = equalityComparator;
-			this.storeIdentifier = getStoreIdentifier(storeIdentifier);
-
-			if (enableDevTools) {
-				this.connectToDevTools();
-				this.sendToDevtools = function (action: string, state: unknown) {
-					if (!this.devToolsInstance) {
-						this.connectToDevTools();
-					}
-					this.devToolsInstance?.send(action, state);
-				};
-			}
 
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
 				this.keySubscribers[key] = [];
@@ -74,14 +56,13 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
 				if (middleware.type === 'HYDRATE') {
-					return middleware.middleware(acc as any, this.state as any);
+					return (middleware.middleware as any)(acc as any, this.state as any);
 				}
 				return acc;
 			}, newVal);
 
 			this.state = afterMiddleware;
 			this.isHydrated = true;
-			this.sendToDevtools?.('HYDRATE', this.state);
 		}
 
 		setState(valueORcallback: SetStateArgs<State>) {
@@ -90,7 +71,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
 				if (middleware.type === 'SET_STATE') {
-					return middleware.middleware(acc as any, this.state as any);
+					return (middleware.middleware as any)(acc as any, this.state as any);
 				}
 				return acc;
 			}, newVal);
@@ -108,7 +89,6 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 				}
 			}
 			this.notifySubscribers();
-			this.sendToDevtools?.('SET_STATE', this.state);
 		}
 
 		subscribe(callback: CallBack<Readonly<State>>) {
@@ -162,13 +142,18 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 								middleware.type ===
 								`set${capitalize(key as string) as Capitalize<keyof State & string>}`
 							) {
-								return middleware.middleware(acc as any, this.state[key] as any);
+								return (middleware.middleware as any)(
+									acc as any,
+									this.state[key] as any,
+									`set${capitalize(key as string)}` as any
+								);
 							}
 
 							if (middleware.type === 'ALL_SETTERS') {
-								return middleware.middleware(
+								return (middleware.middleware as any)(
 									{ ...this.state, [key]: acc } as any,
-									this.state as any
+									this.state as any,
+									`set${capitalize(key as string)}` as any
 								);
 							}
 
@@ -182,35 +167,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 							this.notifyKey(key);
 							this.notifySubscribers();
 						}
-
-						this.sendToDevtools?.(`set${capitalize(key as string)}`, this.state);
 					};
-			}
-		}
-
-		private connectToDevTools() {
-			if (typeof window !== undefined) {
-				this.devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
-					name: this.storeIdentifier,
-					trace: true,
-					features: {
-						dispatch: true,
-					},
-				});
-
-				this.devToolsInstance.subscribe((message) => {
-					if (message.type === 'DISPATCH' && message.state) {
-						console.log('DevTools requested to change the state to', message.state);
-						this.state = message.state;
-						this.notifySubscribers();
-
-						for (const [key, cb] of Object.entries(this.keySubscribers)) {
-							cb(this.state[key]);
-						}
-					}
-				});
-
-				this.devToolsInstance.init(this.state);
 			}
 		}
 	}
