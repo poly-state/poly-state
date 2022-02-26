@@ -153,4 +153,30 @@ describe('Poly State Main functionality', () => {
 			return oldVal;
 		});
 	});
+
+	it('should hydrate store and should not notify any subscribers', () => {
+		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		const mySubscriber = jest.fn();
+
+		myStore.subscribe(mySubscriber);
+
+		myStore.hydrate({ count: [{ test: 2 }, { test: 3 }, { test: 4 }] });
+
+		expect(mySubscriber).not.toHaveBeenCalled();
+		expect(myStore.getState().count).toEqual([{ test: 2 }, { test: 3 }, { test: 4 }]);
+	});
+
+	// eslint-disable-next-line quotes
+	it("should hydrate store only once in it's lifetime", () => {
+		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		const mySubscriber = jest.fn();
+
+		myStore.subscribe(mySubscriber);
+
+		myStore.hydrate({ count: [{ test: 2 }, { test: 3 }, { test: 4 }] });
+		myStore.hydrate({ count: [{ test: 3 }, { test: 4 }, { test: 5 }] });
+
+		expect(mySubscriber).not.toHaveBeenCalled();
+		expect(myStore.getState().count).toEqual([{ test: 2 }, { test: 3 }, { test: 4 }]);
+	});
 });

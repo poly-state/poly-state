@@ -39,7 +39,7 @@ export type EqualityComparatorFunction = (a: unknown, b: unknown) => boolean;
 export type StoreConfig = {
 	/**
 	 * Custom Equality comparator function
-	 * @default none
+	 * @default isEqual (built in)
 	 */
 	equalityComparator?: EqualityComparatorFunction;
 };
@@ -58,13 +58,23 @@ export type GenericMiddleware<T extends StateConstraint, U extends string> = {
 	middleware: MiddlewareCallback<T>;
 };
 
+export type AllSettersMiddlewareCallback<T extends StateConstraint> = (
+	payload: T,
+	previousState: T,
+	action: { [key in keyof T]: `set${Capitalize<string & key>}` }[keyof T]
+) => T;
+
 export type AllSettersMiddleware<T extends StateConstraint> = {
 	type: 'ALL_SETTERS';
-	middleware: (payload: T, previousState: T, action: keyof T) => T;
+	middleware: (
+		payload: T,
+		previousState: T,
+		action: { [key in keyof T]: `set${Capitalize<string & key>}` }[keyof T]
+	) => T;
 };
 
 export type StoreMiddleWareFunction<T extends StateConstraint> =
-	| GeneratedActions<T>
 	| GenericMiddleware<T, 'SET_STATE'>
 	| GenericMiddleware<T, 'HYDRATE'>
-	| AllSettersMiddleware<T>;
+	| AllSettersMiddleware<T>
+	| GeneratedActions<T>;

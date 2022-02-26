@@ -12,9 +12,6 @@ export const withDevTools = <T extends StateConstraint>(
 			devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
 				name: identifier,
 				trace: true,
-				features: {
-					dispatch: true,
-				},
 			});
 
 			devToolsInstance.subscribe((message) => {

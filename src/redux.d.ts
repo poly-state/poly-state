@@ -8,6 +8,7 @@ export interface ReduxDevToolsConnection {
 	send: (action: string, state: any) => void;
 	subscribe: (message: (message: ReduxMessage) => void) => () => void;
 	init: (state: any) => void;
+	disconnect: () => void;
 }
 
 interface ReduxDevTools {

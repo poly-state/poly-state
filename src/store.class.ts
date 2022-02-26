@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-	AllSettersMiddleware,
+	AllSettersMiddlewareCallback,
 	CallBack,
 	EqualityComparatorFunction,
 	GeneratedActions,
@@ -35,7 +35,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		private SET_STATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
 		private HYDRATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
-		private ALL_SETTERS_MIDDLEWARES: AllSettersMiddleware<State>['middleware'][] = [];
+		private ALL_SETTERS_MIDDLEWARES: AllSettersMiddlewareCallback<State>[] = [];
 		private keyMiddlewares: GeneratedActions<State>[] = [];
 
 		constructor(
@@ -95,6 +95,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 				}
 			}
 
+			this.state = newState;
 			//only notify keys that have changed
 			for (const key of keysToNotify) {
 				this.notifyKey(key);
@@ -132,7 +133,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 					break;
 				case 'ALL_SETTERS':
 					this.ALL_SETTERS_MIDDLEWARES.push(
-						middleware.middleware as AllSettersMiddleware<State>['middleware']
+						middleware.middleware as AllSettersMiddlewareCallback<State>
 					);
 					break;
 				default:
@@ -157,7 +158,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		private createMethods() {
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				const action = `set${capitalize(key as string)}`;
+				const action = `set${capitalize(key as string)}` as `set${Capitalize<
+					string & keyof State
+				>}`;
 
 				Store.prototype[action] = function (this: Store<State>, valueORcallback: any) {
 					const newVal =
