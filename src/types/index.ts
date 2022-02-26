@@ -51,11 +51,20 @@ export type GeneratedActions<T extends StateConstraint> = {
 	};
 }[keyof T];
 
+export type MiddlewareCallback<T extends StateConstraint> = (payload: T, previousState: T) => T;
+
+export type GenericMiddleware<T extends StateConstraint, U extends string> = {
+	type: U;
+	middleware: MiddlewareCallback<T>;
+};
+
+export type AllSettersMiddleware<T extends StateConstraint> = {
+	type: 'ALL_SETTERS';
+	middleware: (payload: T, previousState: T, action: keyof T) => T;
+};
+
 export type StoreMiddleWareFunction<T extends StateConstraint> =
 	| GeneratedActions<T>
-	| { type: 'SET_STATE'; middleware: (payload: T, previousState: T) => T }
-	| { type: 'HYDRATE'; middleware: (payload: T, previousState: T) => T }
-	| {
-			type: 'ALL_SETTERS';
-			middleware: (payload: T, previousState: T, type: string) => T;
-	  };
+	| GenericMiddleware<T, 'SET_STATE'>
+	| GenericMiddleware<T, 'HYDRATE'>
+	| AllSettersMiddleware<T>;

@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+	AllSettersMiddleware,
 	CallBack,
 	EqualityComparatorFunction,
+	GeneratedActions,
 	KeySubscriberFunction,
+	MiddlewareCallback,
 	ReturnStoreType,
 	SetStateArgs,
 	StateConstraint,
@@ -30,7 +33,10 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		private keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 		private isEqual: EqualityComparatorFunction;
 
-		private middleWares: StoreMiddleWareFunction<State>[] = [];
+		private SET_STATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
+		private HYDRATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
+		private ALL_SETTERS_MIDDLEWARES: AllSettersMiddleware<State>['middleware'][] = [];
+		private keyMiddlewares: GeneratedActions<State>[] = [];
 
 		constructor(
 			private state: State,
@@ -54,12 +60,10 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			const newVal =
 				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
 
-			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
-				if (middleware.type === 'HYDRATE') {
-					return (middleware.middleware as any)(acc as any, this.state as any);
-				}
-				return acc;
-			}, newVal);
+			const afterMiddleware = this.HYDRATE_MIDDLEWARES.reduce(
+				(acc, middleware) => middleware(acc, this.state),
+				newVal
+			);
 
 			this.state = afterMiddleware;
 			this.isHydrated = true;
@@ -69,26 +73,35 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			const newVal =
 				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
 
-			const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
-				if (middleware.type === 'SET_STATE') {
-					return (middleware.middleware as any)(acc as any, this.state as any);
-				}
-				return acc;
-			}, newVal);
+			const afterMiddleware = this.SET_STATE_MIDDLEWARES.reduce(
+				(acc, middleware) => middleware(acc, this.state),
+				newVal
+			);
 
 			const shouldNotifyAll = !this.isEqual(this.state, afterMiddleware);
 
+			// if there are no changes to the state, don't notify
 			if (!shouldNotifyAll) return;
 
+			const newState = { ...afterMiddleware };
+
+			const keysToNotify: (keyof State)[] = [];
+
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				const shouldNotify = !this.isEqual(this.state[key], newVal[key]);
+				const shouldNotify = !this.isEqual(this.state[key], newState[key]);
 
 				if (shouldNotify) {
-					this.state[key] = newVal[key];
-					this.notifyKey(key);
+					keysToNotify.push(key);
 				}
 			}
+
+			//only notify keys that have changed
+			for (const key of keysToNotify) {
+				this.notifyKey(key);
+			}
+
 			this.notifySubscribers();
+			return this;
 		}
 
 		subscribe(callback: CallBack<Readonly<State>>) {
@@ -110,7 +123,22 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		use(middleware: StoreMiddleWareFunction<State>) {
-			this.middleWares.push(middleware);
+			switch (middleware.type) {
+				case 'SET_STATE':
+					this.SET_STATE_MIDDLEWARES.push(middleware.middleware as MiddlewareCallback<State>);
+					break;
+				case 'HYDRATE':
+					this.HYDRATE_MIDDLEWARES.push(middleware.middleware as MiddlewareCallback<State>);
+					break;
+				case 'ALL_SETTERS':
+					this.ALL_SETTERS_MIDDLEWARES.push(
+						middleware.middleware as AllSettersMiddleware<State>['middleware']
+					);
+					break;
+				default:
+					this.keyMiddlewares.push(middleware as GeneratedActions<State>);
+					break;
+			}
 
 			return this;
 		}
@@ -129,45 +157,35 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		private createMethods() {
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				Store.prototype[`set${capitalize(key as string) as Capitalize<keyof State & string>}`] =
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					function (this: Store<State>, valueORcallback: any) {
-						const newVal =
-							typeof valueORcallback === 'function'
-								? valueORcallback(this.state[key])
-								: valueORcallback;
+				const action = `set${capitalize(key as string)}`;
 
-						const afterMiddleware = this.middleWares.reduce<State>((acc, middleware) => {
-							if (
-								middleware.type ===
-								`set${capitalize(key as string) as Capitalize<keyof State & string>}`
-							) {
-								return (middleware.middleware as any)(
-									acc as any,
-									this.state[key] as any,
-									`set${capitalize(key as string)}` as any
-								);
-							}
+				Store.prototype[action] = function (this: Store<State>, valueORcallback: any) {
+					const newVal =
+						typeof valueORcallback === 'function'
+							? valueORcallback(this.state[key])
+							: valueORcallback;
 
-							if (middleware.type === 'ALL_SETTERS') {
-								return (middleware.middleware as any)(
-									{ ...this.state, [key]: acc } as any,
-									this.state as any,
-									`set${capitalize(key as string)}` as any
-								);
-							}
+					const afterAllSettersMiddleware = this.ALL_SETTERS_MIDDLEWARES.reduce(
+						(acc, middleware) => middleware(acc, this.state, action),
+						newVal
+					);
 
-							return acc;
-						}, newVal);
-
-						const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
-
-						if (shouldNotify) {
-							this.state[key] = newVal;
-							this.notifyKey(key);
-							this.notifySubscribers();
+					const afterMiddleware = this.keyMiddlewares.reduce<State>((acc, middleware) => {
+						if (middleware.type === action) {
+							return middleware.middleware(acc as any, this.state[key]);
 						}
-					};
+
+						return acc;
+					}, afterAllSettersMiddleware);
+
+					const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
+
+					if (shouldNotify) {
+						this.state = { ...this.state, [key]: afterMiddleware };
+						this.notifyKey(key);
+						this.notifySubscribers();
+					}
+				};
 			}
 		}
 	}
