@@ -9,7 +9,7 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "ES6",
+		"module": "CommonJS",
 		"moduleResolution": "Node",
 		"outDir": "dist",
 		"sourceMap": false,

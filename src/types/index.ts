@@ -6,7 +6,7 @@ export type UnsubscribeFunction = () => void;
 export type KeySubscriberFunction<T extends StateConstraint, StoreKeys extends keyof T> = (
 	key: StoreKeys,
 	callback: SubscribeFunction<T[StoreKeys]>
-) => UnsubscribeFunction;
+) => void;
 
 export type GeneratedSetters<T extends StateConstraint> = {
 	[Key in keyof T as `set${Capitalize<string & Key>}`]: SetStateFunction<T[Key]>;
