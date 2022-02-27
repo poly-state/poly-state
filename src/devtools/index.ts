@@ -8,7 +8,7 @@ export const withDevTools = <T extends StateConstraint>(
 	let devToolsInstance: ReduxDevToolsConnection | null = null;
 
 	const connectToDevTools = () => {
-		if (typeof window !== undefined) {
+		if (typeof window !== 'undefined') {
 			devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
 				name: identifier,
 				trace: true,
