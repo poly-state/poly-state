@@ -47,6 +47,10 @@ Documentation for poly-state is located at **https://poly-state.github.io**.
 - [**API Reference**](https://poly-state.github.io/docs/api-reference)
 - [**Middleware**](https://poly-state.github.io/docs/advanced-uses#middleware)
 
+## Preview
+
+![create store](https://github.com/poly-state/poly-state.github.io/raw/master/static/preview.gif)
+
 ## Examples
 
 ```typescript
