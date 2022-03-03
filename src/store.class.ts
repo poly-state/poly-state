@@ -14,7 +14,7 @@ import {
 	StoreType,
 	SubscriberCallBacks,
 } from './types';
-import { capitalize, deleteFromArray, isEqual } from './utils';
+import { capitalize, deepClone, deleteFromArray, isEqual } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
@@ -71,7 +71,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		setState(valueORcallback: SetStateArgs<State>) {
 			const newVal =
-				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
+				typeof valueORcallback === 'function'
+					? valueORcallback(deepClone(this.state))
+					: valueORcallback;
 
 			const afterMiddleware = this.SET_STATE_MIDDLEWARES.reduce(
 				(acc, middleware) => middleware(acc, this.state),
@@ -165,7 +167,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 				Store.prototype[action] = function (this: Store<State>, valueORcallback: any) {
 					const newVal =
 						typeof valueORcallback === 'function'
-							? valueORcallback(this.state[key])
+							? valueORcallback(deepClone(this.state[key]))
 							: valueORcallback;
 
 					const afterAllSettersMiddleware = this.ALL_SETTERS_MIDDLEWARES.reduce(

@@ -127,3 +127,19 @@ export const getStoreIdentifier = (name: string) => {
 		Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 	return `STORE_${randomName}`;
 };
+
+export const deepClone = <T>(a: T): T => {
+	if (Array.isArray(a)) {
+		return a.map(deepClone) as unknown as T;
+	}
+
+	if (isObject(a)) {
+		const b: Record<any, any> = {};
+		for (const key in a) {
+			b[key] = deepClone(a[key]);
+		}
+		return b as unknown as T;
+	}
+
+	return a;
+};
