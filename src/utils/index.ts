@@ -141,5 +141,5 @@ export const deepClone = <T>(a: T): T => {
 		return b as unknown as T;
 	}
 
-	return a;
+	return a as unknown as T;
 };
