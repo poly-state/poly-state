@@ -2,6 +2,11 @@
 
 A boilerplate free state management library for your React, Next.js, Preact and SolidJS applications. Check out the [**documentation**](https://poly-state.github.io) for quick start.
 
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/poly-state/poly-state/issues)
+[![License](https://badgen.net/badge/License/MIT/blue)](https://github.com/poly-state/poly-state/blob/master/LICENSE)
+![npm downloads](https://img.shields.io/npm/dm/@poly-state/poly-state)
+![npm](https://img.shields.io/npm/v/@poly-state/poly-state)
+
 ## Installation
 
 For the core library:
