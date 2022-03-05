@@ -14,7 +14,7 @@ import {
 	StoreType,
 	SubscriberCallBacks,
 } from './types';
-import { capitalize, deepClone, deleteFromArray, isEqual } from './utils';
+import { capitalize, deepClone, deleteFromArray, isFunction } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
@@ -41,10 +41,10 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		constructor(
 			private state: State,
 			config: StoreConfig = {
-				equalityComparator: isEqual,
+				equalityComparator: (a, b) => a === b,
 			}
 		) {
-			const { equalityComparator = isEqual } = config;
+			const { equalityComparator = (a, b) => a === b } = config;
 
 			this.isEqual = equalityComparator;
 
@@ -57,8 +57,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		hydrate(valueORcallback: SetStateArgs<State>) {
 			if (this.isHydrated) return;
 
-			const newVal =
-				typeof valueORcallback === 'function' ? valueORcallback(this.state) : valueORcallback;
+			const newVal = isFunction(valueORcallback) ? valueORcallback(this.state) : valueORcallback;
 
 			const afterMiddleware = this.HYDRATE_MIDDLEWARES.reduce(
 				(acc, middleware) => middleware(acc, this.state),
@@ -70,10 +69,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		setState(valueORcallback: SetStateArgs<State>) {
-			const newVal =
-				typeof valueORcallback === 'function'
-					? valueORcallback(deepClone(this.state))
-					: valueORcallback;
+			const newVal = isFunction(valueORcallback)
+				? valueORcallback(deepClone(this.state))
+				: valueORcallback;
 
 			const afterMiddleware = this.SET_STATE_MIDDLEWARES.reduce(
 				(acc, middleware) => middleware(acc, this.state),
@@ -85,19 +83,17 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			// if there are no changes to the state, don't notify
 			if (!shouldNotifyAll) return;
 
-			const newState = { ...afterMiddleware };
-
 			const keysToNotify: (keyof State)[] = [];
 
 			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				const shouldNotify = !this.isEqual(this.state[key], newState[key]);
+				const shouldNotify = !this.isEqual(this.state[key], newVal[key]);
 
 				if (shouldNotify) {
 					keysToNotify.push(key);
 				}
 			}
 
-			this.state = newState;
+			this.state = newVal;
 			//only notify keys that have changed
 			for (const key of keysToNotify) {
 				this.notifyKey(key);
@@ -165,14 +161,13 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 				>}`;
 
 				Store.prototype[action] = function (this: Store<State>, valueORcallback: any) {
-					const newVal =
-						typeof valueORcallback === 'function'
-							? valueORcallback(deepClone(this.state[key]))
-							: valueORcallback;
+					const newVal = isFunction(valueORcallback)
+						? valueORcallback(this.state[key])
+						: valueORcallback;
 
 					const afterAllSettersMiddleware = this.ALL_SETTERS_MIDDLEWARES.reduce(
 						(acc, middleware) => middleware(acc, this.state, action),
-						newVal
+						{ ...this.state, [key]: newVal }
 					);
 
 					const afterMiddleware = this.keyMiddlewares.reduce<State>((acc, middleware) => {
@@ -181,7 +176,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 						}
 
 						return acc;
-					}, afterAllSettersMiddleware);
+					}, afterAllSettersMiddleware[key]);
 
 					const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
 

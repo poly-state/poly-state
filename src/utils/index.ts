@@ -143,3 +143,7 @@ export const deepClone = <T>(a: T): T => {
 
 	return a as unknown as T;
 };
+
+export const isFunction = (obj: any): obj is CallableFunction => {
+	return typeof obj === 'function';
+};
