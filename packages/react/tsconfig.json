@@ -1,0 +1,32 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"useDefineForClassFields": true,
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"allowJs": false,
+		"skipLibCheck": true,
+		"esModuleInterop": false,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"outDir": "dist",
+		"sourceMap": false,
+		"declaration": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"noFallthroughCasesInSwitch": true,
+		"removeComments": true
+	},
+	"include": ["./src"],
+	"exclude": ["src/___tests___/**/*.ts", "src/___tests___/**/*.tsx"]
+}
