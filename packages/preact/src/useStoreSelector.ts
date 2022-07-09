@@ -1,20 +1,29 @@
 import { ReturnStoreType, StateConstraint } from '@poly-state/poly-state';
 import { useEffect, useRef, useState } from 'preact/compat';
 
-export const useStoreSelector = <T extends StateConstraint, U extends keyof T>(
+export const useStoreSelector = <T extends StateConstraint, U>(
 	store: ReturnStoreType<T>,
-	key: U
-): T extends StateConstraint ? T[U] : never => {
-	const [state, setState] = useState(store.getState()[key]);
+	fn: (store: T) => U
+) => {
 	const subscriberRef = useRef<() => void>();
+	const fnRef = useRef(fn);
+	const [state, setState] = useState(() => fnRef.current(store.getState()));
+
+	useEffect(() => {
+		fnRef.current = fn;
+	}, [fn]);
 
 	useEffect(() => {
 		//clean up previous listener if dependencies change
 		subscriberRef.current?.();
-		subscriberRef.current = store.subscribeKey(key as keyof T, (v) => setState(v as T[U]));
-	}, [store, key]);
+		subscriberRef.current = store.subscribe((v) => setState(fnRef.current(v)));
 
-	useEffect(() => () => subscriberRef.current?.(), []);
+		return () => subscriberRef.current?.();
+	}, [store]);
 
 	return state;
+};
+
+export const createStoreSelector = <T extends StateConstraint>(store: ReturnStoreType<T>) => {
+	return <U>(fn: (store: T) => U) => useStoreSelector(store, fn);
 };
