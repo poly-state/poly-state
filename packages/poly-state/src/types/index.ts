@@ -24,10 +24,6 @@ export type StoreType<State extends StateConstraint> = {
 	hydrate(valueORcallback: SetStateArgs<State>): void;
 	setState(valueORcallback: SetStateArgs<State>): void;
 	subscribe(callback: CallBack<State>): UnsubscribeFunction;
-	subscribeKey<Key extends keyof State>(
-		key: Key,
-		callback: KeySubscriberFunction<State, Key>
-	): UnsubscribeFunction;
 	getState(): State;
 	use(middleware: StoreMiddleWareFunction<State>): ReturnStoreType<State>;
 };

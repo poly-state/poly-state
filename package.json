@@ -1,9 +1,16 @@
 {
 	"name": "root",
 	"devDependencies": {
-		"lerna": "^5.1.8"
+		"lerna": "^5.1.8",
+		"nx": "14.4.2",
+		"@nrwl/nx-cloud": "latest"
 	},
 	"scripts": {
-		"build": "lerna run build"
+		"build": "nx run-many --target=build --all --exclude=react-example",
+		"test": "nx run-many --target=test --all --exclude=react-example",
+		"dev:react": "lerna run dev"
+	},
+	"dependencies": {
+		"nx": "^14.4.2"
 	}
 }

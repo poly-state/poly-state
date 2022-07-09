@@ -8,20 +8,22 @@ export const withDevTools = <T extends StateConstraint>(
 	let devToolsInstance: ReduxDevToolsConnection | null = null;
 
 	const connectToDevTools = () => {
-		if (typeof window !== 'undefined') {
-			devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
-				name: identifier,
-				trace: true,
-			});
-
-			devToolsInstance.subscribe((message) => {
-				if (message.type === 'DISPATCH' && message.state) {
-					store.setState(message.state);
-				}
-			});
-
-			devToolsInstance.init(store.getState());
+		if (typeof window === 'undefined' || !window.__REDUX_DEVTOOLS_EXTENSION__ || devToolsInstance) {
+			return;
 		}
+
+		devToolsInstance = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
+			name: identifier,
+			trace: true,
+		});
+
+		devToolsInstance.subscribe((message) => {
+			if (message.type === 'DISPATCH' && message.state) {
+				store.setState(message.state);
+			}
+		});
+
+		devToolsInstance.init(store.getState());
 	};
 
 	connectToDevTools();

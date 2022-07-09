@@ -4,7 +4,6 @@ import {
 	CallBack,
 	EqualityComparatorFunction,
 	GeneratedActions,
-	KeySubscriberFunction,
 	MiddlewareCallback,
 	ReturnStoreType,
 	SetStateArgs,
@@ -12,7 +11,6 @@ import {
 	StoreConfig,
 	StoreMiddleWareFunction,
 	StoreType,
-	SubscriberCallBacks,
 } from './types';
 import { capitalize, deepClone, deleteFromArray, isFunction } from './utils';
 
@@ -30,7 +28,6 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 	class Store<State extends StateConstraint> implements StoreType<State> {
 		private isHydrated = false;
 		private listeners: CallBack<State>[] = [];
-		private keySubscribers: SubscriberCallBacks<State> = {} as SubscriberCallBacks<State>;
 		private isEqual: EqualityComparatorFunction;
 
 		private SET_STATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
@@ -45,12 +42,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			}
 		) {
 			const { equalityComparator = (a, b) => a === b } = config;
-
 			this.isEqual = equalityComparator;
-
-			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				this.keySubscribers[key] = [];
-			}
 			this.createMethods();
 		}
 
@@ -82,23 +74,8 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 			// if there are no changes to the state, don't notify
 			if (!shouldNotifyAll) return;
-
-			const keysToNotify: (keyof State)[] = [];
-
-			for (const key of Object.keys(this.state) as (keyof State)[]) {
-				const shouldNotify = !this.isEqual(this.state[key], newVal[key]);
-
-				if (shouldNotify) {
-					keysToNotify.push(key);
-				}
-			}
-
 			this.state = newVal;
 			//only notify keys that have changed
-			for (const key of keysToNotify) {
-				this.notifyKey(key);
-			}
-
 			this.notifySubscribers();
 			return this;
 		}
@@ -112,13 +89,6 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		getState() {
 			return this.state;
-		}
-
-		subscribeKey<Key extends keyof State>(key: Key, callback: KeySubscriberFunction<State, Key>) {
-			this.keySubscribers[key].push(callback as unknown as CallBack<State[Key]>);
-			return () => {
-				deleteFromArray(this.keySubscribers[key], callback as unknown as CallBack<State[Key]>);
-			};
 		}
 
 		use(middleware: StoreMiddleWareFunction<State>) {
@@ -140,12 +110,6 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			}
 
 			return this;
-		}
-
-		private notifyKey(key: keyof State) {
-			for (const callback of this.keySubscribers[key]) {
-				callback(this.state[key]);
-			}
 		}
 
 		private notifySubscribers() {
@@ -182,7 +146,6 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 					if (shouldNotify) {
 						this.state = { ...this.state, [key]: afterMiddleware };
-						this.notifyKey(key);
 						this.notifySubscribers();
 					}
 				};
