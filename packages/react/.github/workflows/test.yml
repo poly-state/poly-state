@@ -1,0 +1,21 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: yarn ci
+      - run: yarn lint
+      - run: yarn format:check
+      - run: yarn test
+      - run: yarn build
