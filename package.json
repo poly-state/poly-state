@@ -6,8 +6,8 @@
 		"@nrwl/nx-cloud": "latest"
 	},
 	"scripts": {
-		"build": "nx run-many --target=build --all --exclude=react-example",
-		"test": "nx run-many --target=test --all --exclude=react-example",
+		"build": "nx run-many --target=build --all",
+		"test": "nx run-many --target=test --all",
 		"dev:react": "lerna run dev"
 	},
 	"dependencies": {
