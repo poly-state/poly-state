@@ -1,16 +1,19 @@
 {
 	"name": "root",
+	"scripts": {
+		"build": "nx run-many --target=build --all",
+		"test": "nx run-many --target=test --all"
+	},
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	],
+	"dependencies": {
+		"nx": "^14.4.2"
+	},
 	"devDependencies": {
 		"lerna": "^5.1.8",
 		"nx": "14.4.2",
 		"@nrwl/nx-cloud": "latest"
-	},
-	"scripts": {
-		"build": "nx run-many --target=build --all",
-		"test": "nx run-many --target=test --all",
-		"dev:react": "lerna run dev"
-	},
-	"dependencies": {
-		"nx": "^14.4.2"
 	}
 }
