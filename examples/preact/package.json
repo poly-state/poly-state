@@ -1,0 +1,20 @@
+{
+  "name": "preact-example",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.5.15",
+    "@poly-state/poly-state": "file:../../packages/poly-state",
+    "@poly-state/preact": "file:../../packages/preact"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.1.5",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9"
+  }
+}

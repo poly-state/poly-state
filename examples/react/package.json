@@ -1,7 +1,7 @@
 {
 	"name": "react-example",
 	"private": true,
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
@@ -10,8 +10,8 @@
 	"dependencies": {
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
-		"@poly-state/poly-state": "file:../packages/poly-state",
-		"@poly-state/react": "file:../packages/react"
+		"@poly-state/poly-state": "file:../../packages/poly-state",
+		"@poly-state/react": "file:../../packages/react"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.0",
