@@ -19,7 +19,6 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"format": "prettier -c -w src/**/*",
 		"lint": "eslint --fix src/**/*.{ts,tsx}"
 	}
 }

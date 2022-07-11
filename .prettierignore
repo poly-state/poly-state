@@ -1,2 +1,15 @@
 node_modules
 dist
+lerna.json
+nx.json
+package.json
+pnpm-lock.yaml
+
+examples/**/node_modules
+example/**/dist
+examples/**/package.json
+
+packages/**/node_modules
+example/**/dist
+packages/**/package.json
+
