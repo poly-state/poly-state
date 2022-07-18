@@ -20,5 +20,8 @@
     "@nrwl/nx-cloud": "latest",
     "lerna": "^5.1.8",
     "nx": "^14.4.2"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.4.5"
   }
 }
