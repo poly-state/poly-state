@@ -33,8 +33,8 @@ importers:
 
   examples/react:
     specifiers:
-      '@poly-state/core': workspace:*
-      '@poly-state/react': workspace:^1.2.3
+      '@poly-state/core': '*'
+      '@poly-state/react': '*'
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@vitejs/plugin-react': ^1.3.0
