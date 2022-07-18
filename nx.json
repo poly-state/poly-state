@@ -5,18 +5,12 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": [
-          "dev",
-          "build",
-          "preview",
-          "ci",
           "test",
-          "test:watch",
-          "format",
-          "lint:fix",
           "lint",
-          "format:check"
+          "format:check",
+          "format"
         ],
-        "accessToken": "OWUzNjFhODYtMWY0NS00ZDAxLWI3M2MtZWE4YTNmNDRmYWNlfHJlYWQtd3JpdGU="
+        "accessToken": "MjhhZDQ4N2ItYTY0Yi00YmQ0LWI5ZjUtYTU0NzRiYjEzYjc4fHJlYWQtd3JpdGU="
       }
     }
   },

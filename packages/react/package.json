@@ -3,7 +3,6 @@
 	"version": "1.2.3",
 	"description": "React bindings for React",
 	"main": "dist/index.js",
-	"repository": "https://github.com/poly-state/react.git",
 	"license": "MIT",
 	"private": false,
 	"files": [
@@ -11,7 +10,7 @@
 	],
 	"types": "./dist/index.d.ts",
 	"devDependencies": {
-		"@poly-state/poly-state": "*",
+		"@poly-state/core": "*",
 		"@swc/core": "^1.2.210",
 		"@swc/jest": "^0.2.21",
 		"@testing-library/jest-dom": "^5.16.4",
@@ -32,13 +31,14 @@
 		"jest-environment-jsdom": "^28.1.2"
 	},
 	"peerDependencies": {
-		"@poly-state/poly-state": "^1.1.4"
+		"@poly-state/core": "^1.1.5"
 	},
 	"scripts": {
-		"build": "rimraf dist && tsc",
-		"lint": "eslint src/**/*.{ts,tsx}",
+		"build": "tsc",
+		"lint": "eslint --fix src/**/*.{ts,tsx}",
 		"test": "jest",
-		"ci": "yarn --frozen-lockfile"
+		"format:check": "prettier -c ./",
+		"format": "prettier -c -w ./"
 	},
 	"jest": {
 		"transform": {
@@ -64,5 +64,14 @@
 		},
 		"testRegex": "src/___tests___/.*\\.spec\\.tsx?$",
 		"testEnvironment": "jsdom"
-	}
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/poly-state/poly-state.git",
+		"directory": "packages/react"
+	},
+	"bugs": {
+		"url": "https://github.com/poly-state/poly-state/issues"
+	},
+	"homepage": "https://github.com/poly-state/poly-state"
 }

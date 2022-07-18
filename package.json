@@ -1,21 +1,26 @@
 {
-	"name": "root",
-	"scripts": {
-		"build": "nx run-many --target=build --all",
-		"test": "nx run-many --target=test --all",
-		"format": "prettier -c -w .",
-		"format:check": "prettier -c ."
-	},
-	"workspaces": [
-		"packages/*",
-		"examples/*"
-	],
-	"dependencies": {
-		"nx": "^14.4.2"
-	},
-	"devDependencies": {
-		"lerna": "^5.1.8",
-		"nx": "14.4.2",
-		"@nrwl/nx-cloud": "latest"
-	}
+  "name": "root",
+  "scripts": {
+    "build": "nx run-many --exclude=react-example,preact-example --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "format:check": "nx run-many --target=format:check --all",
+    "format": "nx run-many --target=format --all",
+    "lint": "nx run-many --target=lint--all",
+    "bootstrap": "lerna bootstrap",
+    "dev:react": "nx dev react-example",
+    "dev:preact": "nx dev preact-example"
+  },
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "dependencies": {
+    "nx": "^14.4.2",
+    "lerna": "^5.1.8",
+    "@nrwl/nx-cloud": "latest"
+  },
+  "devDependencies": {
+    "nx": "14.4.3",
+    "@nrwl/nx-cloud": "latest"
+  }
 }

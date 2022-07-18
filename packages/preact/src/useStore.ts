@@ -1,4 +1,4 @@
-import { ReturnStoreType, StateConstraint } from '@poly-state/poly-state';
+import { ReturnStoreType, StateConstraint } from '@poly-state/core';
 import { useEffect, useState } from 'preact/compat';
 
 export const useStore = <T extends StateConstraint>(store: ReturnStoreType<T>) => {

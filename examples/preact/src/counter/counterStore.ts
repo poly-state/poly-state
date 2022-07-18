@@ -1,4 +1,4 @@
-import { createStore } from '@poly-state/poly-state';
+import { createStore } from '@poly-state/core';
 import { createStoreSelector, useStore } from '@poly-state/preact';
 type CounterStore = {
 	count: number;

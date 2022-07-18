@@ -59,7 +59,7 @@ Documentation for poly-state is located at **https://poly-state.github.io**.
 ## Examples
 
 ```typescript
-import { createStore } from '@poly-state/poly-state';
+import { createStore } from '@poly-state/core';
 import { useStore } from '@poly-state/react'; // React & Next.js only
 // import { useStore } from '@poly-state/preact'; // Preact only
 

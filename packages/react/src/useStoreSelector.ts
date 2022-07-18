@@ -1,4 +1,4 @@
-import { ReturnStoreType, StateConstraint } from '@poly-state/poly-state';
+import { ReturnStoreType, StateConstraint } from '@poly-state/core';
 import { useEffect, useRef, useState } from 'react';
 
 export const useStoreSelector = <T extends StateConstraint, U>(
