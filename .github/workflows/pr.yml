@@ -19,10 +19,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
-
+      - run: pnpm install
+      - run: pnpm bootstrap
       - run: npx nx affected --target=format:check --parallel=3
+      - run: npx nx affected --target=build --parallel=3
       - run: npx nx affected --target=lint --parallel=3
       - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
-      - run: npx nx affected --target=build --parallel=3
