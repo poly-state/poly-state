@@ -1,6 +1,7 @@
 {
 	"packages": [
-		"packages/*"
+		"packages/*",
+		"examples/*"
 	],
 	"useNx": true,
 	"version": "0.0.0"

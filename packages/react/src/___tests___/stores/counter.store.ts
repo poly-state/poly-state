@@ -1,4 +1,4 @@
-import { createStore } from '@poly-state/poly-state';
+import { createStore } from '@poly-state/core';
 import { useStore } from '../../useStore';
 import { createStoreSelector } from '../../useStoreSelector';
 

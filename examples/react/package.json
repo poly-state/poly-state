@@ -9,15 +9,15 @@
 	},
 	"dependencies": {
 		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
-		"@poly-state/poly-state": "file:../../packages/poly-state",
-		"@poly-state/react": "file:../../packages/react"
+		"react-dom": "^18.0.0"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.0",
 		"@types/react-dom": "^18.0.0",
 		"@vitejs/plugin-react": "^1.3.0",
 		"typescript": "^4.6.3",
-		"vite": "^2.9.9"
+		"vite": "^2.9.9",
+		"@poly-state/core":"*",
+    "@poly-state/react":"*"
 	}
 }

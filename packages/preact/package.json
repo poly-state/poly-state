@@ -3,22 +3,32 @@
 	"version": "1.0.0",
 	"description": "Poly State Preact",
 	"main": "dist/index.js",
-	"repository": "https://github.com/poly-state/preact.git",
 	"license": "MIT",
 	"private": false,
 	"devDependencies": {
-		"@poly-state/poly-state": "*",
+		"@poly-state/core": "*",
 		"eslint": "^8.19.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"preact": "^10.9.0",
 		"typescript": "^4.7.4"
 	},
 	"peerDependencies": {
-		"@poly-state/poly-state": "^1.1.2",
+		"@poly-state/core": "^1.1.5",
 		"preact": "^10.9.0"
 	},
 	"scripts": {
 		"build": "tsc",
-		"lint": "eslint --fix src/**/*.{ts,tsx}"
-	}
+		"lint": "eslint --fix src/**/*.{ts,tsx}",
+		"format:check": "prettier -c ./",
+		"format": "prettier -c -w ./"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/poly-state/poly-state.git",
+		"directory": "packages/preact"
+	},
+	"bugs": {
+		"url": "https://github.com/poly-state/poly-state/issues"
+	},
+	"homepage": "https://github.com/poly-state/poly-state"
 }

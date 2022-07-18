@@ -1,6 +1,6 @@
 {
-	"name": "@poly-state/poly-state",
-	"version": "1.1.4",
+	"name": "@poly-state/core",
+	"version": "1.1.5",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"license": "MIT",
@@ -9,7 +9,6 @@
 		"dist"
 	],
 	"types": "./dist/index.d.ts",
-	"dependencies": {},
 	"jest": {
 		"moduleFileExtensions": [
 			"ts",
@@ -40,17 +39,16 @@
 		"typescript": "^4.7.4"
 	},
 	"scripts": {
-		"build": "rimraf dist && tsc -p tsconfig.build.json",
-		"ci": "yarn --frozen-lockfile",
+		"build": "tsc -p tsconfig.build.json",
 		"test": "jest",
-		"test:watch": "jest --watch",
-		"lint:fix": "eslint --fix src/**/*.{ts,tsx}",
-		"lint": "eslint  src/**/*.{ts,tsx}",
-		"format:check": "prettier -c src/**/*"
+		"lint": "eslint src/**/*.{ts,tsx}",
+		"format:check": "prettier -c ./",
+		"format": "prettier -c -w ./"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/poly-state/poly-state.git"
+		"url": "https://github.com/poly-state/poly-state.git",
+		"directory": "packages/core"
 	},
 	"bugs": {
 		"url": "https://github.com/poly-state/poly-state/issues"

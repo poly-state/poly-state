@@ -13,7 +13,7 @@ yarn add @poly-state/react
 ## Example
 
 ```ts
-import { createStore } from '@poly-state/poly-state';
+import { createStore } from '@poly-state/core';
 import { createStoreSelector } from '@poly-state/react';
 
 export type CounterStoreType = {
