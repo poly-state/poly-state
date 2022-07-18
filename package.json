@@ -18,9 +18,5 @@
     "nx": "^14.4.2",
     "lerna": "^5.1.8",
     "@nrwl/nx-cloud": "latest"
-  },
-  "devDependencies": {
-    "nx": "14.4.3",
-    "@nrwl/nx-cloud": "latest"
   }
 }
