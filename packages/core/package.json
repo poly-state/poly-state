@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/core",
-	"version": "1.1.5",
+	"version": "1.1.6",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"license": "MIT",
@@ -8,7 +8,13 @@
 	"files": [
 		"dist"
 	],
-	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/index.js",
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"jest": {
 		"moduleFileExtensions": [
 			"ts",
@@ -36,10 +42,11 @@
 		"react": "^18.2.0",
 		"rimraf": "^3.0.2",
 		"solid-js": "^1.4.7",
+		"tsup": "^6.1.3",
 		"typescript": "^4.7.4"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.build.json",
+		"build": "tsup src/index.ts --dts --outDir dist --format esm,cjs --clean",
 		"test": "jest",
 		"lint": "eslint src/**/*.{ts,tsx}",
 		"format:check": "prettier -c ./",

@@ -7,16 +7,18 @@
     "format": "nx run-many --target=format --all",
     "lint": "nx run-many --target=lint--all",
     "bootstrap": "lerna bootstrap",
-    "dev:react": "nx dev react-example",
-    "dev:preact": "nx dev preact-example"
+    "dev:react": "pnpm --filter react-example dev ",
+    "dev:preact": "nx dev preact-example",
+    "lerna": "lerna"
   },
   "workspaces": [
     "packages/*",
     "examples/*"
   ],
   "dependencies": {
-    "nx": "^14.4.2",
+    "@changesets/cli": "^2.23.2",
+    "@nrwl/nx-cloud": "latest",
     "lerna": "^5.1.8",
-    "@nrwl/nx-cloud": "latest"
+    "nx": "^14.4.2"
   }
 }
