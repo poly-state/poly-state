@@ -64,7 +64,9 @@ describe('Poly State Main functionality', () => {
 	});
 
 	it('should send the correct value if the updater is a function when updating a key', () => {
-		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		const myStore = createStore({
+			count: [{ test: 1 }, { test: 2 }, { test: 3 }],
+		});
 		myStore.setCount((oldVal) => {
 			expect(oldVal).toEqual([{ test: 1 }, { test: 2 }, { test: 3 }]);
 			return oldVal;
@@ -72,7 +74,9 @@ describe('Poly State Main functionality', () => {
 	});
 
 	it('should hydrate store and should not notify any subscribers', () => {
-		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		const myStore = createStore({
+			count: [{ test: 1 }, { test: 2 }, { test: 3 }],
+		});
 		const mySubscriber = jest.fn();
 
 		myStore.subscribe(mySubscriber);
@@ -85,7 +89,9 @@ describe('Poly State Main functionality', () => {
 
 	// eslint-disable-next-line quotes
 	it("should hydrate store only once in it's lifetime", () => {
-		const myStore = createStore({ count: [{ test: 1 }, { test: 2 }, { test: 3 }] });
+		const myStore = createStore({
+			count: [{ test: 1 }, { test: 2 }, { test: 3 }],
+		});
 		const mySubscriber = jest.fn();
 
 		myStore.subscribe(mySubscriber);
