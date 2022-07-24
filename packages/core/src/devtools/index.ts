@@ -37,9 +37,9 @@ export const withDevTools = <T extends StateConstraint>(
 
 	store.use({
 		type: 'ALL_SETTERS',
-		middleware: (paylod, _, type) => {
-			sendToDevtools(type, paylod);
-			return paylod;
+		middleware: (payload, _, type) => {
+			sendToDevtools(type, payload);
+			return payload;
 		},
 	});
 
