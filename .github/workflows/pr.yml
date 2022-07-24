@@ -23,7 +23,7 @@ jobs:
         with:
           cache: 'pnpm'
       - run: pnpm install
-      - run: npx nx affected --target=format:check --parallel=3
-      - run: npx nx affected --target=build --parallel=3
-      - run: npx nx affected --target=lint --parallel=3
-      - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
+      - run: pnpm nx affected --target=format:check --parallel=3
+      - run: pnpm nx affected --target=build --parallel=3
+      - run: pnpm nx affected --target=lint --parallel=3
+      - run: pnpm nx affected --target=test --parallel=3 --ci --code-coverage
