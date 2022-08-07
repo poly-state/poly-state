@@ -27,6 +27,5 @@
 		"noFallthroughCasesInSwitch": true,
 		"removeComments": true
 	},
-	"include": ["./src"],
-	"exclude": ["src/___tests___/**/*.ts", "src/___tests___/**/*.tsx"]
+	"include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }

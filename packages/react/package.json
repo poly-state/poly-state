@@ -24,6 +24,7 @@
 		"@types/jest": "^28.1.4",
 		"@types/react": "^18.0.15",
 		"@types/react-dom": "^18.0.6",
+		"@types/testing-library__jest-dom": "^5.14.5",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",
 		"eslint": "^8.19.0",
@@ -31,19 +32,19 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"jest": "^28.1.2",
 		"jest-environment-jsdom": "^28.1.2",
+		"prettier": "^2.7.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"rimraf": "^3.0.2",
 		"tsup": "^6.1.3",
-		"typescript": "^4.7.4",
-		"prettier": "^2.7.1"
+		"typescript": "^4.7.4"
 	},
 	"peerDependencies": {
 		"@poly-state/core": "^1.2.0",
 		"react": "^16.8.6"
 	},
 	"scripts": {
-		"build": "tsup src/index.ts --dts --outDir dist --format esm,cjs --clean",
+		"build": "tsup",
 		"lint": "eslint --fix src/**/*.{ts,tsx}",
 		"test": "jest",
 		"format:check": "prettier --check ./",
@@ -71,7 +72,7 @@
 				}
 			]
 		},
-		"testRegex": "src/___tests___/.*\\.spec\\.tsx?$",
+		"testRegex": "src/tests/.*\\.spec\\.tsx?$",
 		"testEnvironment": "jsdom"
 	},
 	"repository": {
