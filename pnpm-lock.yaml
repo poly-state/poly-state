@@ -6,12 +6,12 @@ importers:
     specifiers:
       '@changesets/changelog-github': ^0.4.5
       '@changesets/cli': ^2.23.2
-      '@nrwl/nx-cloud': latest
-      nx: ^14.4.2
+      '@nrwl/nx-cloud': 14.3.0
+      nx: 14.5.4
     dependencies:
       '@changesets/cli': 2.23.2
-      '@nrwl/nx-cloud': 14.2.0
-      nx: 14.4.2
+      '@nrwl/nx-cloud': 14.3.0
+      nx: 14.5.4
     devDependencies:
       '@changesets/changelog-github': 0.4.5
 
@@ -1331,17 +1331,17 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
 
-  /@nrwl/cli/14.4.2:
-    resolution: {integrity: sha512-JNV4kP9goZD4BlTQGKdKhCRc1bhiWYp1TaDJHdk4ZfhiLt1NzXNxxgc/eX2obFZ3Hw+KdM/gM5F7KfWBbtSGSw==}
+  /@nrwl/cli/14.5.4:
+    resolution: {integrity: sha512-UYr14hxeYV8p/zt6D6z33hljZJQROJAVxSC+mm72fyVvy88Gt0sQNLfMmOARXur0p/73PSLM0jJ2Sr7Ftsuu+A==}
     dependencies:
-      nx: 14.4.2
+      nx: 14.5.4
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
     dev: false
 
-  /@nrwl/nx-cloud/14.2.0:
-    resolution: {integrity: sha512-KnrNFDCII9mbLwFp0HgyKVlhMTXoN90CQzGgdtCNPPBP/Wg84pttcpynGdWyupkrBJxdqMNTJEC7HGib0ipxew==}
+  /@nrwl/nx-cloud/14.3.0:
+    resolution: {integrity: sha512-aByHe8Gp1/IT9CtQYlGLIYBgU+ZtrgEwblBX8kcoBNRPf1OOdouahjyasAjQ9zi1cznve8AzTTcLt2eSCHWfrw==}
     hasBin: true
     dependencies:
       axios: 0.21.4
@@ -1353,11 +1353,11 @@ packages:
       - debug
     dev: false
 
-  /@nrwl/tao/14.4.2:
-    resolution: {integrity: sha512-Ygw3skKZfFhi4MBHZKQ8A67pDQxeyDdY78tFWViMN0SEn9ExL41Q8V9aSMfir8VZYGca6ZOXX5MRhbeHdcgMLQ==}
+  /@nrwl/tao/14.5.4:
+    resolution: {integrity: sha512-a2GCuSE8WghjehuU3GVO63KZEnZXXQiqEg137yN/Na+PxwSu68XeaX53SLyzRskTV120YwBBy1YCTNzAZxxsjg==}
     hasBin: true
     dependencies:
-      nx: 14.4.2
+      nx: 14.5.4
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -5626,8 +5626,8 @@ packages:
     resolution: {integrity: sha512-JYOWTeFoS0Z93587vRJgASD5Ut11fYl5NyihP3KrYBvMe1FRRs6RN7m20SA/16GM4P6hTnZjT+UmDOt38UeXNg==}
     dev: true
 
-  /nx/14.4.2:
-    resolution: {integrity: sha512-bYO//HuwQL4X8y+2BjUPtkPLDiYI1zMejQo6+uJl3+VdYPcsjwW/ca581tBPHiPH95XnHiBartnMrMJtn11grw==}
+  /nx/14.5.4:
+    resolution: {integrity: sha512-xv1nTaQP6kqVDE4PXcB1tLlgzNAPUHE/2vlqSLgxjNb6colKf0vrEZhVTjhnbqBeJiTb33gUx50bBXkurCkN5w==}
     hasBin: true
     requiresBuild: true
     peerDependencies:
@@ -5639,8 +5639,8 @@ packages:
       '@swc/core':
         optional: true
     dependencies:
-      '@nrwl/cli': 14.4.2
-      '@nrwl/tao': 14.4.2
+      '@nrwl/cli': 14.5.4
+      '@nrwl/tao': 14.5.4
       '@parcel/watcher': 2.0.4
       chalk: 4.1.0
       chokidar: 3.5.3
