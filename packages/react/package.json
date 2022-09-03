@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/react",
-	"version": "2.1.0",
+	"version": "3.0.0",
 	"description": "React bindings for React",
 	"main": "dist/index.js",
 	"license": "MIT",
@@ -40,7 +40,7 @@
 		"typescript": "^4.8.2"
 	},
 	"peerDependencies": {
-		"@poly-state/core": "^1.2.0",
+		"@poly-state/core": "^1.3.0",
 		"react": "^16.8.6"
 	},
 	"scripts": {
