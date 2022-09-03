@@ -1,54 +1,79 @@
-import { createStore } from '..';
+import { AllSettersMiddleware, createStore, GeneratedActions, GenericMiddleware } from '..';
 
 describe('Poly State Middleware', () => {
 	const initialState = { count: 0 };
 
-	it('should return the store when the use function is called a type with ALL_SETTERS', () => {
+	type State = typeof initialState;
+
+	it('should call middleware function with appropriate values when using ALL_SETTERS middleware', () => {
 		const myStore = createStore(initialState);
+
+		const middleware: AllSettersMiddleware<State>['middleware'] = (payload) => payload;
+
+		const mockFN = jest.fn(middleware);
+
 		myStore.use({
 			type: 'ALL_SETTERS',
-			middleware: (paylod, previousState, action) => {
-				expect(previousState).toEqual(initialState);
-				expect(paylod).toEqual({ count: 1 });
-				expect(action).toEqual('SET_COUNT');
-				return { count: 1 };
-			},
+			middleware: mockFN,
 		});
+
+		myStore.setCount(1);
+
+		expect(mockFN).toBeCalledTimes(1);
+		expect(mockFN).toBeCalledWith({ count: 1 }, { count: 0 }, 'setCount');
 	});
 
-	it('should return the store when the use function is called a type with HYDRATE', () => {
+	it('should call middleware function with appropriate values when using HYDRATE middleware', () => {
 		const myStore = createStore(initialState);
+
+		const middleware: GenericMiddleware<State, 'HYDRATE'>['middleware'] = (payload) => payload;
+
+		const mockFN = jest.fn(middleware);
+
 		myStore.use({
 			type: 'HYDRATE',
-			middleware: (paylod, previousState) => {
-				expect(paylod).toEqual(initialState);
-				expect(previousState).toEqual(initialState);
-				return { count: 1 };
-			},
+			middleware: mockFN,
 		});
+
+		myStore.hydrate({ count: 1 });
+
+		expect(mockFN).toBeCalledTimes(1);
+		expect(mockFN).toBeCalledWith({ count: 1 }, { count: 0 });
 	});
 
-	it('should return the store when the use function is called a type with SET_STATE', () => {
+	it('should call middleware function with appropriate values when using SET_STATE middleware', () => {
 		const myStore = createStore(initialState);
+
+		const middleware: GenericMiddleware<State, 'SET_STATE'>['middleware'] = (payload) => payload;
+
+		const mockFN = jest.fn(middleware);
+
 		myStore.use({
 			type: 'SET_STATE',
-			middleware: (paylod, previousState) => {
-				expect(paylod).toEqual({ count: 1 });
-				expect(previousState).toEqual(initialState);
-				return { count: 1 };
-			},
+			middleware: mockFN,
 		});
+
+		myStore.setState({ count: 1 });
+
+		expect(mockFN).toBeCalledTimes(1);
+		expect(mockFN).toBeCalledWith({ count: 1 }, { count: 0 });
 	});
 
-	it('should return the store when the use function is called a type with a key', () => {
+	it('should call middleware function with appropriate values when using specific setter middleware', () => {
 		const myStore = createStore(initialState);
+
+		const middleware: GeneratedActions<State>['middleware'] = (payload) => payload;
+
+		const mockFN = jest.fn(middleware);
+
 		myStore.use({
 			type: 'setCount',
-			middleware: (paylod, previousState) => {
-				expect(paylod).toEqual(1);
-				expect(previousState).toEqual(initialState);
-				return 1;
-			},
+			middleware: mockFN,
 		});
+
+		myStore.setCount(1);
+
+		expect(mockFN).toBeCalledTimes(1);
+		expect(mockFN).toBeCalledWith(1, 0);
 	});
 });
