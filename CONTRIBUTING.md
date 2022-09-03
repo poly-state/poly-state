@@ -39,14 +39,20 @@ Fork, then clone the repo:
 git clone https://github.com/poly-state/poly-state.git
 ```
 
+### Install dependencies
+
+```sh
+pnpm install
+```
+
 ### Building
 
-#### Building Redux
+#### Building poly-state
 
 Running the `build` task will create a CommonJS module-per-module build, a ES Modules build and a UMD build.
 
 ```sh
-npm run build
+pnpm build
 ```
 
 ### Testing and Linting
@@ -54,19 +60,25 @@ npm run build
 To only run linting:
 
 ```sh
-npm run lint
+pnpm lint
 ```
 
 To only run tests:
 
 ```sh
-npm run test
+pnpm test
 ```
 
 To continuously watch and run tests, run the following:
 
 ```sh
-npm run test:watch
+pnpm test:watch
+```
+
+To format code according to our style, run the following:
+
+```sh
+pnpm format
 ```
 
 After you have submitted your pull request, we'll try to get back to you as soon as possible. We may suggest some changes or improvements.

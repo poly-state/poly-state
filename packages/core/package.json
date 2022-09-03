@@ -26,26 +26,6 @@
 			"^.+\\.(t|j)s$": "@swc/jest"
 		}
 	},
-	"devDependencies": {
-		"@swc/core": "^1.2.218",
-		"@swc/jest": "^0.2.22",
-		"@types/jest": "^28.1.6",
-		"@typescript-eslint/eslint-plugin": "^5.30.7",
-		"@typescript-eslint/parser": "^5.30.7",
-		"eslint": "^8.20.0",
-		"jest": "^28.1.3",
-		"prettier": "^2.7.1",
-		"rimraf": "^3.0.2",
-		"tsup": "^6.1.3",
-		"typescript": "^4.7.4"
-	},
-	"scripts": {
-		"build": "tsup src/index.ts --dts --outDir dist --format esm,cjs --clean",
-		"test": "jest",
-		"lint": "eslint src/**/*.{ts,tsx}",
-		"format:check": "prettier --check ./",
-		"format": "prettier --check --write ./"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/poly-state/poly-state.git",
@@ -54,5 +34,35 @@
 	"bugs": {
 		"url": "https://github.com/poly-state/poly-state/issues"
 	},
-	"homepage": "https://github.com/poly-state/poly-state"
+	"homepage": "https://github.com/poly-state/poly-state",
+	"scripts": {
+		"build": "tsup",
+		"test": "jest",
+		"lint": "eslint src/**/*.{ts,tsx}",
+		"format:check": "prettier --check ./",
+		"format": "prettier --check --write ./"
+	},
+	"devDependencies": {
+		"@swc/core": "^1.2.246",
+		"@swc/jest": "^0.2.22",
+		"@types/jest": "^29.0.0",
+		"@typescript-eslint/eslint-plugin": "^5.36.1",
+		"@typescript-eslint/parser": "^5.36.1",
+		"eslint": "^8.23.0",
+		"jest": "^29.0.2",
+		"prettier": "^2.7.1",
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.2"
+	},
+	"keywords": [
+		"react",
+		"preact",
+		"svelte",
+		"state",
+		"manager",
+		"management",
+		"redux",
+		"store",
+		"poly-state"
+	]
 }

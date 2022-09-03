@@ -15,20 +15,6 @@
 	],
 	"license": "MIT",
 	"private": false,
-	"devDependencies": {
-		"@poly-state/core": "*",
-		"eslint": "^8.19.0",
-		"preact": "^10.9.0",
-		"tsup": "^6.1.3",
-		"typescript": "^4.7.4",
-		"prettier": "^2.7.1",
-		"@typescript-eslint/eslint-plugin": "^5.30.5",
-		"@typescript-eslint/parser": "^5.30.5"
-	},
-	"peerDependencies": {
-		"@poly-state/core": "^1.2.0",
-		"preact": "^10.9.0"
-	},
 	"scripts": {
 		"build": "tsup src/index.ts --dts --outDir dist --format esm,cjs --clean",
 		"lint": "eslint --fix src/**/*.{ts,tsx}",
@@ -43,5 +29,30 @@
 	"bugs": {
 		"url": "https://github.com/poly-state/poly-state/issues"
 	},
-	"homepage": "https://github.com/poly-state/poly-state"
+	"homepage": "https://github.com/poly-state/poly-state",
+	"keywords": [
+		"react",
+		"preact",
+		"svelte",
+		"state",
+		"manager",
+		"management",
+		"redux",
+		"store",
+		"poly-state"
+	],
+	"devDependencies": {
+		"@poly-state/core": "*",
+		"eslint": "^8.23.0",
+		"preact": "^10.10.6",
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.2",
+		"prettier": "^2.7.1",
+		"@typescript-eslint/eslint-plugin": "^5.36.1",
+		"@typescript-eslint/parser": "^5.36.1"
+	},
+	"peerDependencies": {
+		"@poly-state/core": "^1.2.0",
+		"preact": "^10.9.0"
+	}
 }

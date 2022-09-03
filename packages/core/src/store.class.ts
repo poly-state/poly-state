@@ -12,12 +12,14 @@ import {
 	StoreMiddleWareFunction,
 	StoreType,
 } from './types';
-import { capitalize, deepClone, deleteFromArray, isFunction } from './utils';
+import { capitalize, deleteFromArray, isFunction } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
 	config?: StoreConfig
 ) => ReturnStoreType<T>;
+
+const defaultEqualityChecker = (a: any, b: any) => a === b;
 
 export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,14 +37,8 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		private ALL_SETTERS_MIDDLEWARES: AllSettersMiddlewareCallback<State>[] = [];
 		private keyMiddlewares: GeneratedActions<State>[] = [];
 
-		constructor(
-			private state: State,
-			config: StoreConfig = {
-				equalityComparator: (a, b) => a === b,
-			}
-		) {
-			const { equalityComparator = (a, b) => a === b } = config;
-			this.isEqual = equalityComparator;
+		constructor(private state: State, config: StoreConfig) {
+			this.isEqual = config?.equalityComparator ?? defaultEqualityChecker;
 			this.createMethods();
 		}
 
@@ -61,9 +57,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		setState(valueORcallback: SetStateArgs<State>) {
-			const newVal = isFunction(valueORcallback)
-				? valueORcallback(deepClone(this.state))
-				: valueORcallback;
+			const newVal = isFunction(valueORcallback) ? valueORcallback(this.state) : valueORcallback;
 
 			const afterMiddleware = this.SET_STATE_MIDDLEWARES.reduce(
 				(acc, middleware) => middleware(acc, this.state),
@@ -75,8 +69,8 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			// if there are no changes to the state, don't notify
 			if (!shouldNotifyAll) return;
 			this.state = newVal;
-			//only notify keys that have changed
 			this.notifySubscribers();
+
 			return this;
 		}
 
@@ -113,8 +107,8 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		private notifySubscribers() {
-			for (const callback of this.listeners) {
-				callback(this.state);
+			for (let i = 0; i < this.listeners.length; i++) {
+				this.listeners[i](this.state);
 			}
 		}
 
