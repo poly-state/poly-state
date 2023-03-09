@@ -1,29 +1,18 @@
-import { ReturnStoreType, StateConstraint } from '@poly-state/core';
-import { useEffect, useRef, useState } from 'react';
+import { GenericStore } from '@poly-state/core';
+import { useSyncExternalStore } from 'react';
 
-export const useStoreSelector = <T extends StateConstraint, U>(
-	store: ReturnStoreType<T>,
-	fn: (store: T) => U
+export const useStoreSelector = <State, ReturnValue>(
+	store: GenericStore<State>,
+	fn: (store: State) => ReturnValue
 ) => {
-	const subscriberRef = useRef<() => void>();
-	const fnRef = useRef(fn);
-	const [state, setState] = useState(() => fnRef.current(store.getState()));
-
-	useEffect(() => {
-		fnRef.current = fn;
-	}, [fn]);
-
-	useEffect(() => {
-		//clean up previous listener if dependencies change
-		subscriberRef.current?.();
-		subscriberRef.current = store.subscribe((v) => setState(fnRef.current(v)));
-
-		return () => subscriberRef.current?.();
-	}, [store]);
+	const state = useSyncExternalStore(
+		(v) => store.subscribe(v),
+		() => fn(store.getState())
+	);
 
 	return state;
 };
 
-export const createStoreSelector = <T extends StateConstraint>(store: ReturnStoreType<T>) => {
-	return <U>(fn: (store: T) => U) => useStoreSelector(store, fn);
+export const createStoreSelector = <State>(store: GenericStore<State>) => {
+	return <ReturnValue>(fn: (store: State) => ReturnValue) => useStoreSelector(store, fn);
 };

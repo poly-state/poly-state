@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type ReduxMessage = {
-	type: 'DISPATCH';
+	type: 'DISPATCH' | 'ROLLBACK' | 'ACTION' | 'STATE' | 'ERROR';
 	state: any;
 };
 

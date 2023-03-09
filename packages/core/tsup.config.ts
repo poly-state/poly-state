@@ -9,5 +9,7 @@ export default defineConfig(() => {
 		dts: true,
 		format: ['cjs', 'esm'],
 		dest: 'dist',
+		bundle: true,
+		skipNodeModulesBundle: true,
 	};
 });

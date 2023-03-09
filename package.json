@@ -1,29 +1,28 @@
 {
-  "name": "root",
-  "scripts": {
-    "build": "nx run-many --exclude=react-example,preact-example --target=build --all",
-    "test": "nx run-many --target=test --all",
-    "format:check": "nx run-many --target=format:check --all",
-    "format": "nx run-many --target=format --all",
-    "lint": "nx run-many --target=lint --all",
-    "dev:react": "nx dev react-example",
-    "dev:preact": "nx dev preact-example",
-    "lerna": "lerna",
-    "changesets": "changesets",
-    "nx": "nx",
-    "release": "changeset publish"
-  },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
-  "dependencies": {
-    "@changesets/cli": "^2.23.2",
-    "@nrwl/nx-cloud": "14.3.0",
-    "nx": "14.5.4"
-  },
-  "devDependencies": {
-    "@changesets/changelog-github": "^0.4.5"
-  }
+	"name": "root",
+	"scripts": {
+		"build": "nx run-many --exclude=react-example,preact-example --target=build --all",
+		"test": "pnpm build && nx run-many --target=test --all",
+		"format:check": "nx run-many --target=format:check --all",
+		"format": "nx run-many --target=format --all",
+		"lint": "nx run-many --target=lint --all",
+		"dev:react": "nx dev react-example",
+		"dev:preact": "nx dev preact-example",
+		"lerna": "lerna",
+		"changesets": "changesets",
+		"nx": "nx",
+		"release": "changeset publish"
+	},
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	],
+	"dependencies": {
+		"@changesets/cli": "^2.23.2",
+		"@nrwl/nx-cloud": "14.3.0",
+		"nx": "14.5.4"
+	},
+	"devDependencies": {
+		"@changesets/changelog-github": "^0.4.5"
+	}
 }
-

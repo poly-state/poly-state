@@ -74,3 +74,5 @@ export type StoreMiddleWareFunction<T extends StateConstraint> =
 	| GenericMiddleware<T, 'HYDRATE'>
 	| AllSettersMiddleware<T>
 	| GeneratedActions<T>;
+
+export * from './store.interface';

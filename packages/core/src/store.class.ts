@@ -139,7 +139,11 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 					const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
 
 					if (shouldNotify) {
-						this.state = { ...this.state, [key]: afterMiddleware };
+						this.state = {
+							...this.state,
+							[key]: afterMiddleware,
+						};
+
 						this.notifySubscribers();
 					}
 				};

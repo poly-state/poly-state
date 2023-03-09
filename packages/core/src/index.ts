@@ -9,6 +9,8 @@ export const createStore = <T extends StateConstraint>(
 	return new Store(initialState, config) as unknown as ReturnStoreType<T>;
 };
 
+export * from './computed';
 export * from './devtools';
 export * from './store.class';
 export * from './types';
+export * from './utils';

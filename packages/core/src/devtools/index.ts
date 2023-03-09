@@ -19,7 +19,12 @@ export const withDevTools = <T extends StateConstraint>(
 
 		devToolsInstance.subscribe((message) => {
 			if (message.type === 'DISPATCH' && message.state) {
-				store.setState(message.state);
+				try {
+					store.setState(JSON.parse(message.state));
+				} catch (error) {
+					console.log('Error parsing state from devtools: ', message);
+					console.error(error);
+				}
 			}
 		});
 
