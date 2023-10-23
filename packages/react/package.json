@@ -46,7 +46,7 @@
 	},
 	"scripts": {
 		"build": "tsup",
-		"lint": "eslint --fix src/**/*.{ts,tsx}",
+		"lint": "eslint --fix",
 		"test": "jest",
 		"format:check": "prettier --check ./",
 		"format": "prettier --check --write ./"

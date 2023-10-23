@@ -17,7 +17,7 @@
 	"private": false,
 	"scripts": {
 		"build": "tsup src/index.ts --dts --outDir dist --format esm,cjs --clean",
-		"lint": "eslint --fix src/**/*.{ts,tsx}",
+		"lint": "eslint --fix",
 		"format:check": "prettier --check ./",
 		"format": "prettier --check --write ./"
 	},

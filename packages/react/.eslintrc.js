@@ -1,7 +1,12 @@
 module.exports = {
-	env: {
-		browser: true,
-		es2021: true,
+	env: { browser: true, es2020: true },
+	ignorePatterns: ['dist', '.eslintrc.js'],
+	parser: '@typescript-eslint/parser',
+	parserOptions: {
+		ecmaVersion: 'latest',
+		sourceType: 'module',
+		project: ['./tsconfig.json', './tsconfig.node.json'],
+		tsconfigRootDir: __dirname,
 	},
 	extends: [
 		'eslint:recommended',
@@ -9,14 +14,7 @@ module.exports = {
 		'plugin:@typescript-eslint/recommended',
 		'plugin:react-hooks/recommended',
 	],
-	parser: '@typescript-eslint/parser',
-	parserOptions: {
-		ecmaFeatures: {
-			jsx: true,
-		},
-		ecmaVersion: 12,
-		sourceType: 'module',
-	},
+
 	plugins: ['react', '@typescript-eslint', 'react-hooks'],
 	rules: {
 		indent: ['off', 'tab'],
