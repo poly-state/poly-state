@@ -24,6 +24,6 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.5"
-  }
+  },
+  "packageManager": "pnpm@8.6.1"
 }
-
