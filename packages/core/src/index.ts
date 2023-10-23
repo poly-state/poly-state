@@ -11,4 +11,6 @@ export const createStore = <T extends StateConstraint>(
 
 export * from './devtools';
 export * from './store.class';
+export * from './transact';
 export * from './types';
+export * from './utils';

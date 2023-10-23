@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { GLOBAL_TRANSACT } from './transact';
 import {
 	AllSettersMiddlewareCallback,
 	CallBack,
@@ -12,7 +13,7 @@ import {
 	StoreMiddleWareFunction,
 	StoreType,
 } from './types';
-import { capitalize, deleteFromArray, isFunction } from './utils';
+import { capitalize, isFunction } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
@@ -27,9 +28,12 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		[key: string]: any;
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 	class Store<State extends StateConstraint> implements StoreType<State> {
+		private id = `${Math.random()}${Date.now()}`;
+
 		private isHydrated = false;
-		private listeners: CallBack<State>[] = [];
+		private listeners = new Set<CallBack<Readonly<State>>>();
 		private isEqual: EqualityComparatorFunction;
 
 		private SET_STATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
@@ -75,9 +79,9 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		subscribe(callback: CallBack<Readonly<State>>) {
-			this.listeners.push(callback);
+			this.listeners.add(callback);
 			return () => {
-				deleteFromArray(this.listeners, callback);
+				this.listeners.delete(callback);
 			};
 		}
 
@@ -107,8 +111,23 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		private notifySubscribers() {
-			for (let i = 0; i < this.listeners.length; i++) {
-				this.listeners[i](this.state);
+			if (GLOBAL_TRANSACT.running) {
+				if (GLOBAL_TRANSACT.callBacks.has(this.id)) {
+					return;
+				}
+
+				GLOBAL_TRANSACT.callBacks.set(this.id, () => {
+					this.flush();
+				});
+				return;
+			}
+
+			this.flush();
+		}
+
+		private flush() {
+			for (const listener of this.listeners) {
+				listener(this.state);
 			}
 		}
 

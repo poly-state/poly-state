@@ -1,13 +1,13 @@
 import { ReturnStoreType, StateConstraint } from '@poly-state/core';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'use-sync-external-store';
 
 export const useStore = <T extends StateConstraint>(store: ReturnStoreType<T>) => {
-	const [state, setState] = useState(() => store.getState());
-
-	useEffect(() => {
-		const unsub = store.subscribe((v) => setState(v));
-		return () => unsub();
-	}, [store]);
+	const state = useSyncExternalStore(
+		(cb) => {
+			return store.subscribe(cb);
+		},
+		() => store.getState()
+	);
 
 	return state;
 };
