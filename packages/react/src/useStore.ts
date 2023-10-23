@@ -1,5 +1,5 @@
 import { ReturnStoreType, StateConstraint } from '@poly-state/core';
-import { useSyncExternalStore } from 'use-sync-external-store';
+import { useSyncExternalStore } from 'use-sync-external-store/shim';
 
 export const useStore = <T extends StateConstraint>(store: ReturnStoreType<T>) => {
 	const state = useSyncExternalStore(
