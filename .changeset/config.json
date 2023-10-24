@@ -1,11 +1,14 @@
 {
-	"$schema": "https://unpkg.com/@changesets/config@2.0.1/schema.json",
-	"changelog": ["@changesets/changelog-github", { "repo": "poly-state/poly-state" }],
-	"commit": false,
-	"fixed": [],
-	"linked": [],
-	"access": "public",
-	"baseBranch": "master",
-	"updateInternalDependencies": "minor",
-	"ignore": []
+  "$schema": "https://unpkg.com/@changesets/config@2.0.1/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "@poly-state/poly-state" }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "master",
+  "updateInternalDependencies": "patch",
+  "ignore": []
 }
