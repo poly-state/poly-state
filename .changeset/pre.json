@@ -8,5 +8,7 @@
     "@poly-state/preact": "3.0.0",
     "@poly-state/react": "3.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "healthy-balloons-perform"
+  ]
 }
