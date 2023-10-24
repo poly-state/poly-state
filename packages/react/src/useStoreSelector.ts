@@ -1,25 +1,17 @@
-import { ReturnStoreType, StateConstraint } from '@poly-state/core';
-import { useEffect, useRef, useState } from 'react';
+import { ReturnStoreType, StateConstraint, shallowCompare } from '@poly-state/core';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector.js';
 
-export const useStoreSelector = <T extends StateConstraint, U>(
+export const useStoreSelector = <T extends StateConstraint, U = T>(
 	store: ReturnStoreType<T>,
-	fn: (store: T) => U
+	fn: (store: T) => U = (v) => v as any
 ) => {
-	const subscriberRef = useRef<() => void>();
-	const fnRef = useRef(fn);
-	const [state, setState] = useState(() => fnRef.current(store.getState()));
-
-	useEffect(() => {
-		fnRef.current = fn;
-	}, [fn]);
-
-	useEffect(() => {
-		//clean up previous listener if dependencies change
-		subscriberRef.current?.();
-		subscriberRef.current = store.subscribe((v) => setState(fnRef.current(v)));
-
-		return () => subscriberRef.current?.();
-	}, [store]);
+	const state = useSyncExternalStoreWithSelector(
+		(cb) => store.subscribe(cb),
+		() => store.getState(),
+		null,
+		fn,
+		shallowCompare
+	);
 
 	return state;
 };

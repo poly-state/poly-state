@@ -20,7 +20,7 @@ jobs:
           main-branch-name: 'master'
       - uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v2
         with:
           cache: 'pnpm'

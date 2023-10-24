@@ -1,14 +1,14 @@
 module.exports = {
-	env: {
-		browser: true,
-		es2021: true,
-	},
-	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+	env: { browser: true, es2020: true },
+	ignorePatterns: ['dist', '.eslintrc.js'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
-		ecmaVersion: 12,
+		ecmaVersion: 'latest',
 		sourceType: 'module',
+		project: ['./tsconfig.json', './tsconfig.node.json'],
+		tsconfigRootDir: __dirname,
 	},
+	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
 	plugins: ['@typescript-eslint'],
 	rules: {
 		indent: ['off', 'tab'],
