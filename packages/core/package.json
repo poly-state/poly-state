@@ -1,6 +1,6 @@
 {
 	"name": "@poly-state/core",
-	"version": "1.4.0-next.0",
+	"version": "1.4.0",
 	"description": "A boilerplate free simple state management library",
 	"main": "dist/index.js",
 	"license": "MIT",

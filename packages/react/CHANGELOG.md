@@ -1,5 +1,35 @@
 # @poly-state/react
 
+## 4.0.0
+
+### Patch Changes
+
+- [#26](https://github.com/poly-state/poly-state/pull/26) [`52d8540`](https://github.com/poly-state/poly-state/commit/52d8540d405b77d4ddb94d1daba396038c2de4c0) Thanks [@shahriar-shojib](https://github.com/shahriar-shojib)! - ## @poly-state/core:
+
+  - Global transactions support
+
+  ```js
+  import { transact } from "@poly-state/core";
+
+  transact(() => {
+    store1.setState({ count: 1 });
+    store2.setState({ name: test });
+    store2.setState({ address: "London" });
+  });
+  ```
+
+  > store 1 and store 2 will be updated only once!
+
+  ## @poly-state/react:
+
+  - fixed a peer dependency issue for react
+  - use `useSyncExternalStore`
+  - use `shallowCompare`
+  - upgrade packages and bundling
+
+- Updated dependencies [[`52d8540`](https://github.com/poly-state/poly-state/commit/52d8540d405b77d4ddb94d1daba396038c2de4c0), [`218ed5d`](https://github.com/poly-state/poly-state/commit/218ed5d0c2942b287bf4e2cf6b63b9bccfeb328c)]:
+  - @poly-state/core@1.4.0
+
 ## 4.0.0-next.0
 
 ### Patch Changes
@@ -9,12 +39,12 @@
   - Global transactions support
 
   ```js
-  import { transact } from '@poly-state/core';
+  import { transact } from "@poly-state/core";
 
   transact(() => {
-  	store1.setState({ count: 1 });
-  	store2.setState({ name: test });
-  	store2.setState({ address: 'London' });
+    store1.setState({ count: 1 });
+    store2.setState({ name: test });
+    store2.setState({ address: "London" });
   });
   ```
 
