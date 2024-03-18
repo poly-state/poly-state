@@ -4,7 +4,7 @@ import { ReturnStoreType, StateConstraint } from '../types';
 export const withDevTools = <T extends StateConstraint>(
 	store: ReturnStoreType<T>,
 	identifier: string
-): ReturnStoreType<T> => {
+) => {
 	let devToolsInstance: ReduxDevToolsConnection | null = null;
 
 	const connectToDevTools = () => {
@@ -59,5 +59,5 @@ export const withDevTools = <T extends StateConstraint>(
 		},
 	});
 
-	return store;
+	return devToolsInstance as ReduxDevToolsConnection | null;
 };

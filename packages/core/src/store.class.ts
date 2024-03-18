@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GLOBAL_TRANSACT } from './transact';
+import { getGlobalTransaction } from './transact';
 import {
 	AllSettersMiddlewareCallback,
 	CallBack,
-	EqualityComparatorFunction,
 	GeneratedActions,
 	MiddlewareCallback,
 	ReturnStoreType,
@@ -13,36 +13,36 @@ import {
 	StoreMiddleWareFunction,
 	StoreType,
 } from './types';
-import { capitalize, isFunction } from './utils';
+import { capitalize, getStoreIdentifier, isFunction, shallowCompare } from './utils';
 
 type StoreFactory<T extends StateConstraint> = new (
 	initialState: T,
-	config?: StoreConfig
+	config?: StoreConfig<T>
 ) => ReturnStoreType<T>;
 
-const defaultEqualityChecker = (a: any, b: any) => a === b;
-
 export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface Store<State extends StateConstraint> {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		[key: string]: any;
-	}
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 	class Store<State extends StateConstraint> implements StoreType<State> {
-		private id = `${Math.random()}${Date.now()}`;
+		private id: string;
 
 		private isHydrated = false;
 		private listeners = new Set<CallBack<Readonly<State>>>();
-		private isEqual: EqualityComparatorFunction;
 
 		private SET_STATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
 		private HYDRATE_MIDDLEWARES: MiddlewareCallback<State>[] = [];
 		private ALL_SETTERS_MIDDLEWARES: AllSettersMiddlewareCallback<State>[] = [];
 		private keyMiddlewares: GeneratedActions<State>[] = [];
 
-		constructor(private state: State, config: StoreConfig) {
-			this.isEqual = config?.equalityComparator ?? defaultEqualityChecker;
+		private get isEqual() {
+			return this.config.equalityComparator || shallowCompare;
+		}
+
+		constructor(
+			private state: State,
+			private config: StoreConfig<State> = {
+				equalityComparator: shallowCompare,
+			}
+		) {
+			this.id = getStoreIdentifier('');
 			this.createMethods();
 		}
 
@@ -58,6 +58,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 			this.state = afterMiddleware;
 			this.isHydrated = true;
+			this.config.onEvent?.SET_STATE?.(this.state);
 		}
 
 		setState(valueORcallback: SetStateArgs<State>) {
@@ -74,6 +75,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 			if (!shouldNotifyAll) return;
 			this.state = newVal;
 			this.notifySubscribers();
+			this.config.onEvent?.SET_STATE?.(this.state);
 
 			return this;
 		}
@@ -111,14 +113,13 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 		}
 
 		private notifySubscribers() {
+			const GLOBAL_TRANSACT = getGlobalTransaction();
 			if (GLOBAL_TRANSACT.running) {
 				if (GLOBAL_TRANSACT.callBacks.has(this.id)) {
 					return;
 				}
 
-				GLOBAL_TRANSACT.callBacks.set(this.id, () => {
-					this.flush();
-				});
+				GLOBAL_TRANSACT.callBacks.set(this.id, () => this.flush());
 				return;
 			}
 
@@ -137,7 +138,7 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 					string & keyof State
 				>}`;
 
-				Store.prototype[action] = function (this: Store<State>, valueORcallback: any) {
+				(Store.prototype as any)[action] = function (this: Store<State>, valueORcallback: any) {
 					const newVal = isFunction(valueORcallback)
 						? valueORcallback(this.state[key])
 						: valueORcallback;
@@ -157,10 +158,14 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 					const shouldNotify = !this.isEqual(this.state[key], afterMiddleware);
 
-					if (shouldNotify) {
-						this.state = { ...this.state, [key]: afterMiddleware };
-						this.notifySubscribers();
+					if (!shouldNotify) {
+						return;
 					}
+
+					this.state = { ...this.state, [key]: afterMiddleware };
+					this.notifySubscribers();
+					this.config.onEvent?.ALL_SETTERS?.(this.state);
+					(this.config.onEvent?.[action] as Function | undefined)?.(afterMiddleware);
 				};
 			}
 		}
