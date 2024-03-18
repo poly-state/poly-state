@@ -1,5 +1,12 @@
 # @poly-state/preact
 
+## 4.0.0-next.0
+
+### Patch Changes
+
+- Updated dependencies [[`52d8540`](https://github.com/poly-state/poly-state/commit/52d8540d405b77d4ddb94d1daba396038c2de4c0)]:
+  - @poly-state/core@1.4.0-next.0
+
 ## 3.0.0
 
 ### Minor Changes
