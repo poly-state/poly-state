@@ -9,12 +9,12 @@
   - Global transactions support
 
   ```js
-  import { transact } from "@poly-state/core";
+  import { transact } from '@poly-state/core';
 
   transact(() => {
-    store1.setState({ count: 1 });
-    store2.setState({ name: test });
-    store2.setState({ address: "London" });
+  	store1.setState({ count: 1 });
+  	store2.setState({ name: test });
+  	store2.setState({ address: 'London' });
   });
   ```
 
