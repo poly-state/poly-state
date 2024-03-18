@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@changesets/cli": "^2.23.2",
-    "@nrwl/nx-cloud": "latest",
-    "nx": "latest"
+    "@nrwl/nx-cloud": "^18.0.0",
+    "nx": "^18.1.1"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.5"
