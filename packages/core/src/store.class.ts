@@ -114,16 +114,16 @@ export const getStoreClass = <T extends StateConstraint>(): StoreFactory<T> => {
 
 		private notifySubscribers() {
 			const GLOBAL_TRANSACT = getGlobalTransaction();
-			if (GLOBAL_TRANSACT.running) {
-				if (GLOBAL_TRANSACT.callBacks.has(this.id)) {
-					return;
-				}
+			if (!GLOBAL_TRANSACT.running) {
+				return this.flush();
+			}
 
-				GLOBAL_TRANSACT.callBacks.set(this.id, () => this.flush());
+			if (GLOBAL_TRANSACT.callBacks.has(this.id)) {
 				return;
 			}
 
-			this.flush();
+			GLOBAL_TRANSACT.callBacks.set(this.id, () => this.flush());
+			return;
 		}
 
 		private flush() {
