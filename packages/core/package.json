@@ -24,7 +24,8 @@
 		"testRegex": ".spec.ts$",
 		"transform": {
 			"^.+\\.(t|j)s$": "@swc/jest"
-		}
+		},
+		"testEnvironment": "jsdom"
 	},
 	"repository": {
 		"type": "git",

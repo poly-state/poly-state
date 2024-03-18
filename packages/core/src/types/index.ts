@@ -32,12 +32,21 @@ export type ReturnStoreType<T extends StateConstraint> = StoreType<T> & Generate
 
 export type EqualityComparatorFunction = (a: unknown, b: unknown) => boolean;
 
-export type StoreConfig = {
+type GeneratedEvents<T extends StateConstraint> = {
+	[Key in keyof T as `set${Capitalize<string & Key>}`]?: (newData: T[Key]) => void;
+};
+
+export type StoreConfig<T extends StateConstraint> = {
 	/**
 	 * Custom Equality comparator function
-	 * @default isEqual (built in)
+	 * @default shallowCompare (built in)
 	 */
 	equalityComparator?: EqualityComparatorFunction;
+	onEvent?: GeneratedEvents<T> & {
+		ALL_SETTERS?: (newData: T) => void;
+		SET_STATE?: (newData: T) => void;
+		HYDRATE?: (newData: T) => void;
+	};
 };
 
 export type GeneratedActions<T extends StateConstraint> = {

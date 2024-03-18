@@ -1,6 +1,6 @@
 import { createStore, transact } from '..';
 
-describe('Poly Stat Transact functionality', () => {
+describe('Poly State Transact functionality', () => {
 	it('should perform batch updates', () => {
 		const store = createStore({ count: 0, name: 'test', other: {} });
 
