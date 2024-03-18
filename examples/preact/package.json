@@ -14,7 +14,7 @@
     "@preact/preset-vite": "^2.1.5",
     "typescript": "^5.2.2",
     "vite": "^2.9.9",
-    "@poly-state/core": "1.4.0-next.0",
-    "@poly-state/preact": "4.0.0-next.0"
+    "@poly-state/core": "1.4.0",
+    "@poly-state/preact": "4.0.0"
   }
 }
