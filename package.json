@@ -13,14 +13,10 @@
     "nx": "nx",
     "release": "changeset publish"
   },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "dependencies": {
     "@changesets/cli": "^2.23.2",
-    "@nrwl/nx-cloud": "14.3.0",
-    "nx": "14.5.4"
+    "@nrwl/nx-cloud": "latest",
+    "nx": "latest"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.5"
